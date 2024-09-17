@@ -18,6 +18,7 @@ const errorHandler: ErrorRequestHandler = (error, req, res, next) => {
   if (error instanceof z.ZodError) {
     return handleZodError(res, error);
   }
+
   return res
     .status(INTERNAL_SERVER_ERROR)
     .json({ error: "Internal Server Error" });

@@ -5,6 +5,9 @@ import jwt from "jsonwebtoken";
 import VerificationCodeModel from "../models/verificationCode.model";
 import { oneYearFromNow } from "../utils/date";
 import { JWT_REFRESH_SECRET, JWT_SECRET } from "../constants/env";
+import appAssert from "../utils/appAssert";
+import { CONFLICT } from "../constants/http";
+
 export type ICreateAccount = {
   email: string;
   password: string;
@@ -17,9 +20,7 @@ export const createAccount = async (data: ICreateAccount) => {
   // if it doesn't, create the account
   const existingUser = await UserModel.exists({ email: data.email });
 
-  if (existingUser) {
-    throw new Error("User already exists");
-  }
+  appAssert(!existingUser, CONFLICT, "User already exists");
 
   //   create user
   const user = await UserModel.create({
