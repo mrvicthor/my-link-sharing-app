@@ -8,6 +8,10 @@ export interface IUser extends mongoose.Document {
   updatedAt: Date;
   links: mongoose.Types.ObjectId[];
   comparePassword: (password: string) => Promise<boolean>;
+  omitPassword: () => Pick<
+    IUser,
+    "_id" | "email" | "verified" | "createdAt" | "updatedAt" | "__v" | "links"
+  >;
 }
 const userSchema = new Schema<IUser>({
   email: {
@@ -42,6 +46,13 @@ userSchema.pre("save", async function (next) {
 userSchema.methods.comparePassword = async function (value: string) {
   return comparePassword(value, this.password);
 };
+
+userSchema.methods.omitPassword = function () {
+  const user = this.toObject();
+  delete user.password;
+  return user;
+};
+
 const UserModel = mongoose.model<IUser>("User", userSchema);
 
 export default UserModel;
