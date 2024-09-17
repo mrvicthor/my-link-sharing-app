@@ -7,6 +7,7 @@ import { oneYearFromNow } from "../utils/date";
 import { JWT_REFRESH_SECRET, JWT_SECRET } from "../constants/env";
 import appAssert from "../utils/appAssert";
 import { CONFLICT, UNAUTHORIZED } from "../constants/http";
+import { refreshTokenSignOptions, signToken } from "../utils/jwt";
 
 export type ICreateAccount = {
   email: string;
@@ -28,9 +29,11 @@ export const createAccount = async (data: ICreateAccount) => {
     password: data.password,
   });
 
+  const userId = user._id;
+
   //   create verification code
   const verificationCode = await VerificationCodeModel.create({
-    userId: user._id,
+    userId,
     type: VerificationCodeType.EmailVerification,
     expiresAt: oneYearFromNow(),
   });
@@ -39,28 +42,17 @@ export const createAccount = async (data: ICreateAccount) => {
 
   // create session
   const session = await SessionModel.create({
-    userId: user._id,
+    userId,
     userAgent: data.userAgent,
   });
 
   //   sign access token & refresh token
-  const refreshToken = jwt.sign(
+  const refreshToken = signToken(
     { sessionId: session._id },
-    JWT_REFRESH_SECRET,
-    {
-      audience: ["user"],
-      expiresIn: "30d",
-    }
+    refreshTokenSignOptions
   );
 
-  const accessToken = jwt.sign(
-    { userId: user._id, sessionId: session._id },
-    JWT_SECRET,
-    {
-      audience: ["user"],
-      expiresIn: "15m",
-    }
-  );
+  const accessToken = signToken({ userId, sessionId: session._id });
 
   return {
     user: user.omitPassword(),
@@ -94,19 +86,9 @@ export const loginUser = async ({ email, password, userAgent }: ILoginUser) => {
   };
   // sign access token & refresh token
 
-  const refreshToken = jwt.sign(sessionInfo, JWT_REFRESH_SECRET, {
-    audience: ["user"],
-    expiresIn: "30d",
-  });
+  const refreshToken = signToken(sessionInfo, refreshTokenSignOptions);
 
-  const accessToken = jwt.sign(
-    { userId: user._id, ...sessionInfo },
-    JWT_SECRET,
-    {
-      audience: ["user"],
-      expiresIn: "15m",
-    }
-  );
+  const accessToken = signToken({ ...sessionInfo, userId: user._id });
   // return user
   return {
     user: user.omitPassword(),
