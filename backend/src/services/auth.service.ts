@@ -16,6 +16,10 @@ import {
   signToken,
   verifyToken,
 } from "../utils/jwt";
+import { getFromEmail, getToEmail, transporter } from "../utils/sendMail";
+import { APP_ORIGIN } from "../constants/env";
+import { getVerifyEmailTemplate } from "../utils/emailTemplate";
+import { get } from "mongoose";
 
 export type ICreateAccount = {
   email: string;
@@ -46,7 +50,22 @@ export const createAccount = async (data: ICreateAccount) => {
     expiresAt: oneYearFromNow(),
   });
 
+  const url = `${APP_ORIGIN}/email/verify/${verificationCode._id}`;
   //   send verification email
+
+  const mailOptions = {
+    from: getFromEmail(),
+    to: getToEmail(user.email),
+    ...getVerifyEmailTemplate(url),
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.log("Error sending email: ", error);
+    } else {
+      console.log("Verification email sent: ", info.response);
+    }
+  });
 
   // create session
   const session = await SessionModel.create({
