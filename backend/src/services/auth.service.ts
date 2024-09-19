@@ -29,7 +29,8 @@ import {
   getPasswordResetTemplate,
   getVerifyEmailTemplate,
 } from "../utils/emailTemplate";
-import { get } from "mongoose";
+
+import { hashPassword } from "../utils/bcrypt";
 
 export type ICreateAccount = {
   email: string;
@@ -240,4 +241,34 @@ export const sendPasswordResetEmail = async (email: string) => {
       };
     }
   });
+};
+
+type IResetPassword = {
+  password: string;
+  verificationCode: string;
+};
+
+export const resetPassword = async ({
+  password,
+  verificationCode,
+}: IResetPassword) => {
+  const validCode = await VerificationCodeModel.findOne({
+    _id: verificationCode,
+    type: VerificationCodeType.PasswordReset,
+    expiresAt: { $gt: new Date() },
+  });
+  appAssert(validCode, NOT_FOUND, "Invalid or expired verification code");
+  const updatedUser = await UserModel.findOneAndUpdate(validCode.userId, {
+    password: await hashPassword(password),
+  });
+  appAssert(updatedUser, INTERNAL_SERVER_ERROR, "Failed to reset password");
+  //   delete the verification code
+  await validCode.deleteOne();
+  //   delete all session associated to the user
+  await SessionModel.deleteMany({
+    userId: updatedUser._id,
+  });
+  return {
+    user: updatedUser.omitPassword(),
+  };
 };
