@@ -1,4 +1,4 @@
-// import resend from "../config/resend";
+import resend from "../config/resend";
 import nodemailer from "nodemailer";
 import {
   EMAIL_SENDER,
@@ -14,7 +14,7 @@ type MailProps = {
   html?: string;
 };
 // export const sendMail = async ({ to, subject, text, html }: MailProps) => {
-//   return resend.emails.send({
+//   await resend.emails.send({
 //     from: "onboarding@resend.dev",
 //     to: "delivered@resend.dev",
 //     subject,
@@ -27,7 +27,7 @@ export const getFromEmail = () =>
   NODE_ENV === "development" ? "onboarding@resend.dev" : EMAIL_SENDER;
 
 export const getToEmail = (to: string) =>
-  NODE_ENV === "development" ? "delivered@resend.dev" : to;
+  NODE_ENV === "development" ? "victoreleanya07@gmail.com" : to;
 
 export const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",

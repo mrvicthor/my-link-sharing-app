@@ -233,6 +233,7 @@ export const sendPasswordResetEmail = async (email: string) => {
         `${error.name}: ${error.message}`
       );
     } else {
+      console.log("Password reset email sent: ", info.messageId);
       return {
         url,
         emailId: info.messageId,
