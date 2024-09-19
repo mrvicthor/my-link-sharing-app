@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const emailSchema = z
+export const emailSchema = z
   .string({ message: "Can't be empty" })
   .email({ message: "Invalid email" });
 

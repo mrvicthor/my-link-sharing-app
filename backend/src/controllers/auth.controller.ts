@@ -2,6 +2,7 @@ import {
   registerSchema,
   loginSchema,
   verificationSchema,
+  emailSchema,
 } from "./auth.schemas";
 import catchErrors from "../utils/catchErrors";
 import {
@@ -79,4 +80,8 @@ export const verifyEmailHandler = catchErrors(async (req, res) => {
 
   await verifyEmail(verificationCode);
   return res.status(OK).json({ message: "Email verified successfully" });
+});
+
+export const sendPasswordResetHandler = catchErrors(async (req, res) => {
+  const email = emailSchema.parse(req.body.email);
 });

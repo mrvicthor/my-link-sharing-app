@@ -2,12 +2,19 @@ import VerificationCodeType from "../constants/verificationCodeTypes";
 import UserModel from "../models/user.model";
 import SessionModel from "../models/session.model";
 import VerificationCodeModel from "../models/verificationCode.model";
-import { oneYearFromNow, ONE_DAY_MS, thirtyDaysFromNow } from "../utils/date";
+import {
+  oneYearFromNow,
+  ONE_DAY_MS,
+  thirtyDaysFromNow,
+  FIVE_MINUTES_AGO,
+  oneHourFromNow,
+} from "../utils/date";
 import appAssert from "../utils/appAssert";
 import {
   CONFLICT,
   INTERNAL_SERVER_ERROR,
   NOT_FOUND,
+  TOO_MANY_REQUESTS,
   UNAUTHORIZED,
 } from "../constants/http";
 import {
@@ -18,7 +25,10 @@ import {
 } from "../utils/jwt";
 import { getFromEmail, getToEmail, transporter } from "../utils/sendMail";
 import { APP_ORIGIN } from "../constants/env";
-import { getVerifyEmailTemplate } from "../utils/emailTemplate";
+import {
+  getPasswordResetTemplate,
+  getVerifyEmailTemplate,
+} from "../utils/emailTemplate";
 import { get } from "mongoose";
 
 export type ICreateAccount = {
@@ -179,4 +189,54 @@ export const verifyEmail = async (code: string) => {
   return {
     user: updatedUser.omitPassword(),
   };
+};
+
+export const sendPasswordResetEmail = async (email: string) => {
+  // get the user by email
+  const user = await UserModel.findOne({ email });
+  appAssert(user, NOT_FOUND, "User not found");
+
+  const fiveMinutesAgo = FIVE_MINUTES_AGO();
+  const count = await VerificationCodeModel.countDocuments({
+    userId: user._id,
+    expiresAt: { $gt: fiveMinutesAgo },
+  });
+  appAssert(
+    count <= 1,
+    TOO_MANY_REQUESTS,
+    "Too many reset requests, please try again later"
+  );
+
+  const expiresAt = oneHourFromNow();
+
+  const verificationCode = await VerificationCodeModel.create({
+    userId: user._id,
+    type: VerificationCodeType.PasswordReset,
+    expiresAt,
+  });
+
+  const url = `${APP_ORIGIN}/password/reset?code=${
+    verificationCode._id
+  }&exp=${expiresAt.getTime()}`;
+
+  const mailOptions = {
+    from: getFromEmail(),
+    to: getToEmail(user.email),
+    ...getPasswordResetTemplate(url),
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      appAssert(
+        info.messageId,
+        INTERNAL_SERVER_ERROR,
+        `${error.name}: ${error.message}`
+      );
+    } else {
+      return {
+        url,
+        emailId: info.messageId,
+      };
+    }
+  });
 };
