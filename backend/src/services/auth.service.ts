@@ -23,7 +23,7 @@ import {
   signToken,
   verifyToken,
 } from "../utils/jwt";
-import { getFromEmail, getToEmail, transporter } from "../utils/sendMail";
+import { getFromEmail, getToEmail, sendMail } from "../utils/sendMail";
 import { APP_ORIGIN } from "../constants/env";
 import {
   getPasswordResetTemplate,
@@ -63,20 +63,14 @@ export const createAccount = async (data: ICreateAccount) => {
 
   const url = `${APP_ORIGIN}/email/verify/${verificationCode._id}`;
   //   send verification email
-
-  const mailOptions = {
-    from: getFromEmail(),
-    to: getToEmail(user.email),
+  const { error } = await sendMail({
+    to: user.email,
     ...getVerifyEmailTemplate(url),
-  };
-
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      console.log("Error sending email: ", error);
-    } else {
-      console.log("Verification email sent: ", info.response);
-    }
   });
+
+  if (error) {
+    console.log(error);
+  }
 
   // create session
   const session = await SessionModel.create({
@@ -193,54 +187,52 @@ export const verifyEmail = async (code: string) => {
 };
 
 export const sendPasswordResetEmail = async (email: string) => {
-  // get the user by email
-  const user = await UserModel.findOne({ email });
-  appAssert(user, NOT_FOUND, "User not found");
+  try {
+    // get the user by email
+    const user = await UserModel.findOne({ email });
+    appAssert(user, NOT_FOUND, "User not found");
 
-  const fiveMinutesAgo = FIVE_MINUTES_AGO();
-  const count = await VerificationCodeModel.countDocuments({
-    userId: user._id,
-    expiresAt: { $gt: fiveMinutesAgo },
-  });
-  appAssert(
-    count <= 1,
-    TOO_MANY_REQUESTS,
-    "Too many reset requests, please try again later"
-  );
+    const fiveMinutesAgo = FIVE_MINUTES_AGO();
+    const count = await VerificationCodeModel.countDocuments({
+      userId: user._id,
+      expiresAt: { $gt: fiveMinutesAgo },
+    });
+    appAssert(
+      count <= 1,
+      TOO_MANY_REQUESTS,
+      "Too many reset requests, please try again later"
+    );
 
-  const expiresAt = oneHourFromNow();
+    const expiresAt = oneHourFromNow();
 
-  const verificationCode = await VerificationCodeModel.create({
-    userId: user._id,
-    type: VerificationCodeType.PasswordReset,
-    expiresAt,
-  });
+    const verificationCode = await VerificationCodeModel.create({
+      userId: user._id,
+      type: VerificationCodeType.PasswordReset,
+      expiresAt,
+    });
 
-  const url = `${APP_ORIGIN}/password/reset?code=${
-    verificationCode._id
-  }&exp=${expiresAt.getTime()}`;
+    const url = `${APP_ORIGIN}/password/reset?code=${
+      verificationCode._id
+    }&exp=${expiresAt.getTime()}`;
 
-  const mailOptions = {
-    from: getFromEmail(),
-    to: getToEmail(user.email),
-    ...getPasswordResetTemplate(url),
-  };
+    const { data, error } = await sendMail({
+      to: email,
+      ...getPasswordResetTemplate(url),
+    });
 
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      appAssert(
-        info.messageId,
-        INTERNAL_SERVER_ERROR,
-        `${error.name}: ${error.message}`
-      );
-    } else {
-      console.log("Password reset email sent: ", info.messageId);
-      return {
-        url,
-        emailId: info.messageId,
-      };
-    }
-  });
+    appAssert(
+      data?.id,
+      INTERNAL_SERVER_ERROR,
+      `${error?.name} - ${error?.message}`
+    );
+    return {
+      url,
+      emailId: data?.id,
+    };
+  } catch (error: any) {
+    console.log("SendPasswordResetError:", error.message);
+    return {};
+  }
 };
 
 type IResetPassword = {
