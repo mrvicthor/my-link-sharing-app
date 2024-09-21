@@ -9,6 +9,7 @@ import authRoutes from "./routes/auth.route";
 import { OK } from "./constants/http";
 import authenticate from "./middleware/authenticate";
 import userRoutes from "./routes/user.route";
+import sessionRoutes from "./routes/session.route";
 const app = express();
 
 app.use(express.json());
@@ -26,6 +27,7 @@ app.get("/", (req, res, next) => {
 
 app.use("/auth", authRoutes);
 app.use("/user", authenticate, userRoutes);
+app.use("/sessions", authenticate, sessionRoutes);
 
 app.use(errorHandler);
 app.listen(PORT, async () => {
