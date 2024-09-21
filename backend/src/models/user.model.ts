@@ -13,27 +13,30 @@ export interface IUser extends mongoose.Document {
     "_id" | "email" | "verified" | "createdAt" | "updatedAt" | "__v" | "links"
   >;
 }
-const userSchema = new Schema<IUser>({
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: true,
-  },
-  verified: {
-    type: Boolean,
-    default: false,
-  },
-  links: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Link",
+const userSchema = new Schema<IUser>(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
     },
-  ],
-});
+    password: {
+      type: String,
+      required: true,
+    },
+    verified: {
+      type: Boolean,
+      default: false,
+    },
+    links: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Link",
+      },
+    ],
+  },
+  { timestamps: true }
+);
 
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {

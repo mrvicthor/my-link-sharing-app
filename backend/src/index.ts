@@ -8,6 +8,7 @@ import errorHandler from "./middleware/errorHandler";
 import authRoutes from "./routes/auth.route";
 import { OK } from "./constants/http";
 import authenticate from "./middleware/authenticate";
+import userRoutes from "./routes/user.route";
 const app = express();
 
 app.use(express.json());
@@ -24,7 +25,7 @@ app.get("/", (req, res, next) => {
 });
 
 app.use("/auth", authRoutes);
-app.use("/", authenticate, userRoutes);
+app.use("/user", authenticate, userRoutes);
 
 app.use(errorHandler);
 app.listen(PORT, async () => {
