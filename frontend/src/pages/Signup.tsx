@@ -15,7 +15,7 @@ const Signup = () => {
           <p className="mt-1 text-[#737373] text-sm ">
             Let's get you started sharing your links
           </p>
-          <div className="mt-2">
+          <div className="mt-6">
             <label htmlFor="email" className="capitalize font-light text-sm">
               Email address
             </label>
@@ -29,7 +29,7 @@ const Signup = () => {
               />
             </div>
           </div>
-          <div className="mt-1">
+          <div className="mt-4">
             <label className="capitalize font-light text-sm" htmlFor="password">
               create password
             </label>
@@ -43,7 +43,7 @@ const Signup = () => {
               />
             </div>
           </div>
-          <div className="mt-1">
+          <div className="mt-4">
             <label
               className="capitalize font-light text-sm"
               htmlFor="confirmPassword"

@@ -92,6 +92,7 @@
 
   body {
     background: #fafafa;
+    font-family: "Instrument Sans", sans-serif;
   }
 
   .register-form-input > input {
