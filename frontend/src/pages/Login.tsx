@@ -1,10 +1,14 @@
 import z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Loader2 } from "lucide-react";
 import AppLogo from "@/assets/images/logo-devlinks-large.svg";
 import EmailIcon from "@/assets/images/icon-email.svg";
 import PasswordIcon from "@/assets/images/icon-password.svg";
 import { Button } from "@/components/ui/button";
+import { Link, useNavigate } from "react-router-dom";
+import { useMutation } from "@tanstack/react-query";
+import { login } from "@/lib/api";
 
 const loginSchema = z.object({
   email: z
@@ -15,15 +19,26 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 function Login() {
+  const navigate = useNavigate();
   const {
     handleSubmit,
     register,
     formState: { errors, isDirty },
   } = useForm<LoginFormData>({ resolver: zodResolver(loginSchema) });
 
-  const onSubmit = (data: LoginFormData) => {
-    console.log(data);
-  };
+  const {
+    mutate: loginUser,
+    isPending,
+    isError,
+  } = useMutation({
+    mutationFn: login,
+    onSuccess: () => {
+      navigate("/", { replace: true });
+    },
+  });
+
+  const onSubmit = (data: LoginFormData) => loginUser(data);
+
   return (
     <>
       <section className="container mx-auto max-w-[29.75rem] px-4 w-[90%] mt-[8.875rem] ">
@@ -31,6 +46,11 @@ function Login() {
           <div className="text-center flex devlinks-logo md:justify-center">
             <img src={AppLogo} alt="devlinks logo" />
           </div>
+          {isError && (
+            <p className="text-center text-2xl mt-4 text-[#ff3939]">
+              Invalid email or password
+            </p>
+          )}
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="bg-white login-form mt-10 rounded-lg py-10 px-6"
@@ -90,8 +110,16 @@ function Login() {
                 )}
               </div>
             </div>
-            <Button type="submit" variant={"primary"} disabled={!isDirty}>
-              Login
+            <Button
+              type="submit"
+              variant={"primary"}
+              disabled={!isDirty || isPending}
+            >
+              {isPending ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                "Login"
+              )}
             </Button>
             <p className="mt-6 text-[#737373] text-center text-sm">
               Don't have an account?
@@ -99,6 +127,13 @@ function Login() {
                 Create account
               </a>
             </p>
+            <Button
+              asChild
+              variant={"link"}
+              className="text-[#633cff] text-center w-full"
+            >
+              <Link to="/password/forgot">Forgot password?</Link>
+            </Button>
           </form>
         </section>
       </section>
