@@ -194,7 +194,8 @@ export const sendPasswordResetEmail = async (email: string) => {
 
     const fiveMinutesAgo = FIVE_MINUTES_AGO();
     const count = await VerificationCodeModel.countDocuments({
-      userId: user._id,
+      userId: user?._id,
+      type: VerificationCodeType.PasswordReset,
       expiresAt: { $gt: fiveMinutesAgo },
     });
     appAssert(

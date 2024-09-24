@@ -4,6 +4,8 @@ import { Routes, Route } from "react-router-dom";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import Home from "./pages/Home";
+import VerifyEmail from "./pages/VerifyEmail";
+import PasswordReset from "./pages/PasswordReset";
 
 function App() {
   return (
@@ -12,7 +14,9 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-      </Routes>{" "}
+        <Route path="/email/verify/:code" element={<VerifyEmail />} />
+        <Route path="/password/forgot" element={<PasswordReset />} />
+      </Routes>
     </>
   );
 }

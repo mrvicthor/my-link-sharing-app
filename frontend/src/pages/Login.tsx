@@ -92,7 +92,7 @@ function Login() {
               </label>
               <div
                 className={`${
-                  errors.email ? "border-[#ff3939] border" : "input-wrapper"
+                  errors.password ? "border-[#ff3939] border" : "input-wrapper"
                 } register-form-input flex`}
               >
                 <img src={PasswordIcon} alt="password icon" />
