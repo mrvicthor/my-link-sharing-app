@@ -4,7 +4,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { Link, useSearchParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import ResetPasswordForm from "@/components/ui/resetPasswordForm";
+import ResetPasswordForm from "@/components/ui/ResetPasswordForm";
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();

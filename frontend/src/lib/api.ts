@@ -23,3 +23,4 @@ export const sendPasswordResetEmail = async (email: string) =>
   API.post("/auth/password/forgot", { email });
 export const resetPassword = async (data: ResetPasswordData) =>
   API.post("/auth/password/reset", data);
+export const getUser = async () => API.get("/user");
