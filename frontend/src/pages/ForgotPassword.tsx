@@ -16,7 +16,7 @@ const passwordResetSchema = z.object({
 });
 
 type PasswordResetFormData = z.infer<typeof passwordResetSchema>;
-const PasswordReset = () => {
+const ForgotPassword = () => {
   const {
     register,
     handleSubmit,
@@ -104,4 +104,4 @@ const PasswordReset = () => {
   );
 };
 
-export default PasswordReset;
+export default ForgotPassword;
