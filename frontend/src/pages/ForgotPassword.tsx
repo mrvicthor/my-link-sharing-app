@@ -65,7 +65,12 @@ const ForgotPassword = () => {
           >
             <h1 className="text-2xl font-bold">Reset password</h1>
             <div className="mt-6">
-              <label htmlFor="email" className="capitalize font-light text-sm">
+              <label
+                htmlFor="email"
+                className={`capitalize font-light text-sm ${
+                  errors.email && "text-[#ff3939]"
+                }`}
+              >
                 Email address
               </label>
               <div

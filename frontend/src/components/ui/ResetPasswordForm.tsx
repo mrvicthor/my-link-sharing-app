@@ -68,7 +68,12 @@ const ResetPasswordForm = ({ code }: ResetPasswordFormProps) => {
         >
           <h1 className="text-2xl font-bold">Change your password</h1>
           <div className="mt-4">
-            <label className=" font-light text-sm" htmlFor="password">
+            <label
+              className={`font-light text-sm ${
+                errors.password && "text-[#ff3939]"
+              }`}
+              htmlFor="password"
+            >
               New password
             </label>
             <div

@@ -60,7 +60,12 @@ function Login() {
               Add your details below to get back into the app
             </p>
             <div className="mt-6">
-              <label htmlFor="email" className="capitalize font-light text-sm">
+              <label
+                htmlFor="email"
+                className={`capitalize font-light text-sm ${
+                  errors.email && "text-[#ff3939]"
+                }`}
+              >
                 Email address
               </label>
               <div
@@ -85,7 +90,9 @@ function Login() {
             </div>
             <div className="mt-4">
               <label
-                className="capitalize font-light text-sm"
+                className={`capitalize font-light text-sm ${
+                  errors.password && "text-[#ff3939]"
+                }`}
                 htmlFor="password"
               >
                 password

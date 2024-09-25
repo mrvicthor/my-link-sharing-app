@@ -1,7 +1,5 @@
 import useAuth from "@/hooks/useAuth";
-
 import Loader from "./Loader";
-
 import { Navigate, Outlet } from "react-router-dom";
 
 const AppContainer = () => {
