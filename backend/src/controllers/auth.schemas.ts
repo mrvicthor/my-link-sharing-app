@@ -15,6 +15,9 @@ export const loginSchema = z.object({
 export const registerSchema = loginSchema
   .extend({
     confirmPassword: z.string().min(8, { message: "Please check again" }),
+    firstName: z.string().optional(),
+    lastName: z.string().optional(),
+    image: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",

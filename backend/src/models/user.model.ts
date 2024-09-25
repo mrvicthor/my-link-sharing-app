@@ -4,13 +4,27 @@ export interface IUser extends mongoose.Document {
   email: string;
   password: string;
   verified: boolean;
+  firstName: string;
+  lastName: string;
+  image: string;
+  profileCompleted: boolean;
   createdAt: Date;
   updatedAt: Date;
   links: mongoose.Types.ObjectId[];
   comparePassword: (password: string) => Promise<boolean>;
   omitPassword: () => Pick<
     IUser,
-    "_id" | "email" | "verified" | "createdAt" | "updatedAt" | "__v" | "links"
+    | "_id"
+    | "email"
+    | "verified"
+    | "firstName"
+    | "lastName"
+    | "image"
+    | "profileCompleted"
+    | "createdAt"
+    | "updatedAt"
+    | "__v"
+    | "links"
   >;
 }
 const userSchema = new Schema<IUser>(
@@ -25,6 +39,19 @@ const userSchema = new Schema<IUser>(
       required: true,
     },
     verified: {
+      type: Boolean,
+      default: false,
+    },
+    firstName: {
+      type: String,
+    },
+    lastName: {
+      type: String,
+    },
+    image: {
+      type: String,
+    },
+    profileCompleted: {
       type: Boolean,
       default: false,
     },
