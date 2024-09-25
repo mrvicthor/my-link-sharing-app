@@ -1,8 +1,20 @@
 import DevLinkLogo from "@/assets/images/logo-devlinks-large.svg";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import LinkIcon from "@/components/LinkIcon";
+import { Button } from "./ui/button";
+import { useMutation } from "@tanstack/react-query";
+import { logout } from "@/lib/api";
+import queryClient from "@/config/queryClient";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const { mutate: signOut } = useMutation({
+    mutationFn: logout,
+    onSettled: () => {
+      queryClient.clear();
+      navigate("/login", { replace: true });
+    },
+  });
   return (
     <header className="px-6 my-6 h-[4.875rem] container">
       <nav className="bg-[#ffffff] w-full  flex h-full rounded-md items-center justify-between pl-6 pr-4">
@@ -55,6 +67,9 @@ const Header = () => {
           >
             Preview
           </NavLink>
+          <Button onClick={() => signOut()} variant={"link"}>
+            Logout
+          </Button>
         </div>
       </nav>
     </header>
