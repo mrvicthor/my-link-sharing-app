@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import VerificationCodeType from "../constants/verificationCodeTypes";
 import UserModel from "../models/user.model";
 import SessionModel from "../models/session.model";
@@ -23,7 +24,7 @@ import {
   signToken,
   verifyToken,
 } from "../utils/jwt";
-import { getFromEmail, getToEmail, sendMail } from "../utils/sendMail";
+import { sendMail } from "../utils/sendMail";
 import { APP_ORIGIN } from "../constants/env";
 import {
   getPasswordResetTemplate,
@@ -264,4 +265,36 @@ export const resetPassword = async ({
   return {
     user: updatedUser.omitPassword(),
   };
+};
+
+type ICreateProfile = {
+  firstName: string;
+  lastName: string;
+  image: string;
+  userId: mongoose.Types.ObjectId;
+};
+export const createProfile = async ({
+  firstName,
+  lastName,
+  image,
+  userId,
+}: ICreateProfile) => {
+  try {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      userId,
+      {
+        firstName,
+        lastName,
+        image,
+        profileCompleted: true,
+      },
+      { new: true }
+    );
+    return {
+      user: updatedUser?.omitPassword(),
+    };
+  } catch (error: any) {
+    console.log("error:", error.message);
+    return {};
+  }
 };

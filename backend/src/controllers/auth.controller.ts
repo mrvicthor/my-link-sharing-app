@@ -4,10 +4,12 @@ import {
   verificationSchema,
   emailSchema,
   resetPasswordSchema,
+  createProfileSchema,
 } from "./auth.schemas";
 import catchErrors from "../utils/catchErrors";
 import {
   createAccount,
+  createProfile,
   loginUser,
   refreshUserAccessToken,
   resetPassword,
@@ -98,4 +100,11 @@ export const resetPasswordHandler = catchErrors(async (req, res) => {
   return clearAuthCookies(res)
     .status(OK)
     .json({ message: "Password reset successfully" });
+});
+
+export const createProfileHandler = catchErrors(async (req, res) => {
+  const request = createProfileSchema.parse(req.body);
+  const userId = req.userId;
+  await createProfile({ ...request, userId });
+  return res.status(OK).json({ message: "Profile created successfully" });
 });
