@@ -6,6 +6,9 @@ export default {
     extend: {
       container: {
         center: true,
+        screens: {
+          xl: "1440px",
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

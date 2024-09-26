@@ -130,4 +130,9 @@
   .flex-item-3 {
     flex: 0 1 auto;
   }
+
+  .grid-wrapper {
+    grid-template-columns: 1fr 50.5rem;
+    grid-template-rows: 80vh;
+  }
 }
