@@ -21,6 +21,9 @@ const buttonVariants = cva(
         link: "text-primary underline-offset-4 hover:underline",
         primary:
           "text-[#ffffff] bg-[#633cff] hover:bg-[#beadff] text-center py-2 px-4 rounded-md w-full mt-6 h-[46px]",
+        addButton:
+          "border border-[#633cff] text-[#633cff] bg-[#ffffff] hover:bg-[#EFEBFF] w-full",
+        saveButton: "bg-[#beadff] text-[#ffffff]",
       },
       size: {
         default: "h-9 px-4 py-2",
