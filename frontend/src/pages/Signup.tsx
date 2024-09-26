@@ -16,10 +16,10 @@ const registerSchema = z
       .email({ message: "Invalid email" }),
     password: z
       .string({ message: "Please check again" })
-      .min(8, { message: "At least 8 characters" }),
+      .min(8, { message: "Please check again" }),
     confirmPassword: z
       .string({ message: "Please check again" })
-      .min(8, { message: "At least 8 characters" }),
+      .min(8, { message: "Please check again" }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -85,7 +85,7 @@ const Signup = () => {
                 aria-invalid={errors.email ? "true" : "false"}
               />
               {errors.email && (
-                <p role="alert" className="text-[#ff3939] flex-item-3">
+                <p role="alert" className="text-[#ff3939] flex-item-3 text-sm">
                   {errors.email.message}
                 </p>
               )}
@@ -110,7 +110,7 @@ const Signup = () => {
                 aria-invalid={errors.password ? "true" : "false"}
               />
               {errors.password && (
-                <p role="alert" className="text-[#ff3939] flex-item-3">
+                <p role="alert" className="text-[#ff3939] flex-item-3 text-sm">
                   {errors.password.message}
                 </p>
               )}
@@ -135,7 +135,7 @@ const Signup = () => {
                 aria-invalid={errors.confirmPassword ? "true" : "false"}
               />
               {errors.confirmPassword && (
-                <p role="alert" className="text-[#ff3939] flex-item-3">
+                <p role="alert" className="text-[#ff3939] flex-item-3 text-sm">
                   {errors.confirmPassword.message}
                 </p>
               )}
