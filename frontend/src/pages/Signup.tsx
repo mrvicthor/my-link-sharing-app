@@ -48,7 +48,7 @@ const Signup = () => {
   const onSubmit = (data: RegisterFormData) => createAccount(data);
 
   return (
-    <section className="container mx-auto max-w-[29.75rem] px-4 w-[90%] mt-[8.875rem] ">
+    <section className="container mx-auto max-w-[29.75rem] px-4 w-[90%] mt-[8.875rem]">
       <section className="login-wrapper">
         <div className="text-center flex devlinks-logo md:justify-center">
           <img src={AppLogo} alt="devlinks logo" />
@@ -85,7 +85,7 @@ const Signup = () => {
                 aria-invalid={errors.email ? "true" : "false"}
               />
               {errors.email && (
-                <p role="alert" className="text-[#ff3939]">
+                <p role="alert" className="text-[#ff3939] flex-item-3">
                   {errors.email.message}
                 </p>
               )}
@@ -110,7 +110,7 @@ const Signup = () => {
                 aria-invalid={errors.password ? "true" : "false"}
               />
               {errors.password && (
-                <p role="alert" className="text-[#ff3939]">
+                <p role="alert" className="text-[#ff3939] flex-item-3">
                   {errors.password.message}
                 </p>
               )}
@@ -135,7 +135,7 @@ const Signup = () => {
                 aria-invalid={errors.confirmPassword ? "true" : "false"}
               />
               {errors.confirmPassword && (
-                <p role="alert" className="text-[#ff3939]">
+                <p role="alert" className="text-[#ff3939] flex-item-3">
                   {errors.confirmPassword.message}
                 </p>
               )}

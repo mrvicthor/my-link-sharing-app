@@ -6,7 +6,7 @@ import AppLogo from "@/assets/images/logo-devlinks-large.svg";
 import EmailIcon from "@/assets/images/icon-email.svg";
 import PasswordIcon from "@/assets/images/icon-password.svg";
 import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { login } from "@/lib/api";
 
@@ -19,7 +19,9 @@ const loginSchema = z.object({
 
 type LoginFormData = z.infer<typeof loginSchema>;
 function Login() {
+  const location = useLocation();
   const navigate = useNavigate();
+  const redirectUrl = location.state?.redirectUrl || "/";
   const {
     handleSubmit,
     register,
@@ -33,7 +35,7 @@ function Login() {
   } = useMutation({
     mutationFn: login,
     onSuccess: () => {
-      navigate("/", { replace: true });
+      navigate(redirectUrl, { replace: true });
     },
   });
 
@@ -82,7 +84,7 @@ function Login() {
                   aria-invalid={errors.email ? "true" : "false"}
                 />
                 {errors.email && (
-                  <p role="alert" className="text-[#ff3939]">
+                  <p role="alert" className="text-[#ff3939] flex-item-3">
                     {errors.email.message}
                   </p>
                 )}
@@ -111,7 +113,7 @@ function Login() {
                   aria-invalid={errors.password ? "true" : "false"}
                 />
                 {errors.password && (
-                  <p role="alert" className="text-[#ff3939]">
+                  <p role="alert" className="text-[#ff3939] flex-item-3">
                     {errors.password.message}
                   </p>
                 )}
