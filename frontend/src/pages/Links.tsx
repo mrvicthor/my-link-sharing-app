@@ -8,14 +8,18 @@ const Links = () => {
         <div className="box-phone hidden lg:flex lg:justify-center bg-[#ffffff] py-20 rounded-md">
           <img src={PhoneMockup} alt="phone mockup" />
         </div>
-        <div className="box-links bg-[#ffffff] pt-6 rounded-md">
+        <div className="box-links bg-[#ffffff] pt-6 rounded-md pb-6">
           <div className="px-6">
             <h1 className="font-bold text-2xl">Customize your links</h1>
             <p className="text-[#737373] text-sm mt-4 opacity-80">
               Add/edit/remove links below and then share all your profiles with
               the world{" "}
             </p>
-            <Button variant={"addButton"} size={"lg"} className=" mt-8">
+            <Button
+              variant={"addButton"}
+              size={"lg"}
+              className="font-bold mt-8"
+            >
               + Add new link
             </Button>
             <section className="bg-[#fafafa] flex flex-col justify-center items-center mt-4 rounded-md gap-y-6 py-10 mb-6">
@@ -29,8 +33,10 @@ const Links = () => {
             </section>
           </div>
           <hr />
-          <div className="flex justify-end mt-4 pr-6">
-            <Button variant={"saveButton"}>Save</Button>
+          <div className="flex justify-end mt-4 px-6">
+            <Button variant={"saveButton"} className="w-full md:w-auto">
+              Save
+            </Button>
           </div>
         </div>
       </div>
