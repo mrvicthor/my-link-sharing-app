@@ -79,7 +79,7 @@
   li,
   figcaption {
     text-wrap: pretty;
-    max-width: 65ch;
+    /* max-width: 65ch; */
   }
 
   header,

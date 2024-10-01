@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
 
 const Link = z.object({
   platform: z
@@ -46,7 +47,7 @@ const Links = () => {
       links: [
         {
           platform: "GitHub",
-          urlLink: "https://example.com",
+          urlLink: "",
         },
       ],
     },
@@ -71,7 +72,7 @@ const Links = () => {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               <h1 className="font-bold text-2xl px-6">Customize your links</h1>
-              <p className="text-[#737373] text-sm mt-4 opacity-80 px-6">
+              <p className="text-[#737373] text-sm mt-4 opacity-80 px-6 w-full">
                 Add/edit/remove links below and then share all your profiles
                 with the world{" "}
               </p>
@@ -89,58 +90,90 @@ const Links = () => {
                 </Button>
               </div>
               {isFormOpen ? (
-                <section className="min-h-[27.1875rem] px-6">
+                <section className="h-[22.8rem] px-6 space-y-3 overflow-auto">
                   {fields.map((item, index) => (
-                    <div>
-                      <Button onClick={() => remove(index)}>Remove</Button>
-                      <FormField
-                        key={item.id}
-                        {...form.register(`links.${index}.platform` as const)}
-                        control={form.control}
-                        render={({ field }) => (
-                          <FormItem>
-                            <FormLabel>Platform</FormLabel>
+                    <div key={item.id} className="bg-[#fafafa] rounded-md p-3">
+                      <div className="flex justify-between">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-[#737373]">
+                            = Link #{index + 1}
+                          </span>
+                        </div>
+                        <span
+                          role="button"
+                          className="block hover:cursor-pointer text-[#737373] opacity-50"
+                          onClick={() => remove(index)}
+                        >
+                          Remove
+                        </span>
+                      </div>
+                      <div>
+                        <FormField
+                          {...form.register(`links.${index}.platform` as const)}
+                          control={form.control}
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel className="text-[#333333]">
+                                Platform
+                              </FormLabel>
 
-                            <Select
-                              onValueChange={field.onChange}
-                              defaultValue={field.value}
-                            >
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger>
+                                    <SelectValue placeholder="GitHub" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {options.map((option) => (
+                                    <div key={option.id}>
+                                      <SelectItem
+                                        value={option.title}
+                                        className="relative text-[#737373] py-2"
+                                      >
+                                        <div className="absolute">
+                                          <LinkIcon
+                                            color=""
+                                            pathString={option.icon}
+                                          />{" "}
+                                        </div>
+                                        <div className="ml-8">
+                                          {option.title}
+                                        </div>
+                                      </SelectItem>
+                                      <hr />
+                                    </div>
+                                  ))}
+                                </SelectContent>
+                              </Select>
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          {...form.register(`links.${index}.urlLink` as const)}
+                          control={form.control}
+                          render={({ field }) => (
+                            <FormItem className="mt-1">
+                              <FormLabel>Link</FormLabel>
                               <FormControl>
-                                <SelectTrigger>
-                                  <SelectValue placeholder="GitHub" />
-                                </SelectTrigger>
+                                <Input
+                                  className=""
+                                  placeholder="🔗  https://github.com/benwright"
+                                  {...field}
+                                />
                               </FormControl>
-
-                              <SelectContent>
-                                {options.map((option) => (
-                                  <>
-                                    <SelectItem
-                                      value={option.title}
-                                      key={option.id}
-                                      className="relative text-[#737373] py-2"
-                                    >
-                                      <div className="absolute ">
-                                        <LinkIcon
-                                          color=""
-                                          pathString={option.icon}
-                                        />{" "}
-                                      </div>
-                                      <div className="ml-8">{option.title}</div>
-                                    </SelectItem>
-                                    <hr />
-                                  </>
-                                ))}
-                              </SelectContent>
-                            </Select>
-                          </FormItem>
-                        )}
-                      />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
                     </div>
                   ))}
                 </section>
               ) : (
                 <section className="px-6">
-                  <div className="bg-[#fafafa] flex flex-col justify-center items-center mt-4 rounded-md gap-y-6 py-10 mb-6 min-h-[24.1875rem]">
+                  <div className="bg-[#fafafa] flex flex-col justify-center items-center mt-4 rounded-md gap-y-6 py-10 mb-6 max-h-[19.1875rem]">
                     <img src={PhoneIcon} alt="phone icon" />
                     <h2 className="text-2xl font-bold">
                       Let's get you started
@@ -156,7 +189,12 @@ const Links = () => {
 
               <hr />
               <div className="flex justify-end mt-4 px-6">
-                <Button variant={"saveButton"} className="w-full md:w-auto">
+                <Button
+                  variant={"saveButton"}
+                  className={`${
+                    isFormOpen ? "bg-[#633cff]" : "bg-[#beadff]"
+                  } w-full md:w-auto`}
+                >
                   Save
                 </Button>
               </div>
