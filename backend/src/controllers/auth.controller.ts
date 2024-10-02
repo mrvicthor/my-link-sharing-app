@@ -16,7 +16,7 @@ import {
   sendPasswordResetEmail,
   verifyEmail,
 } from "../services/auth.service";
-import { CREATED, OK, UNAUTHORIZED } from "../constants/http";
+import { BAD_REQUEST, CREATED, OK, UNAUTHORIZED } from "../constants/http";
 import {
   setAuthCookies,
   clearAuthCookies,
@@ -103,8 +103,11 @@ export const resetPasswordHandler = catchErrors(async (req, res) => {
 });
 
 export const createProfileHandler = catchErrors(async (req, res) => {
+  if (!req.file)
+    return res.status(BAD_REQUEST).json({ message: "No file uploaded" });
   const request = createProfileSchema.parse(req.body);
   const userId = req.userId;
-  await createProfile({ ...request, userId });
+  const image = { data: req.file.buffer, contentType: req.file.mimetype };
+  await createProfile({ ...request, userId, image });
   return res.status(OK).json({ message: "Profile created successfully" });
 });

@@ -270,14 +270,17 @@ export const resetPassword = async ({
 type ICreateProfile = {
   firstName: string;
   lastName: string;
-  image: string;
   userId: mongoose.Types.ObjectId;
+  image: {
+    data: Buffer;
+    contentType: string;
+  };
 };
 export const createProfile = async ({
   firstName,
   lastName,
-  image,
   userId,
+  image,
 }: ICreateProfile) => {
   try {
     const updatedUser = await UserModel.findByIdAndUpdate(

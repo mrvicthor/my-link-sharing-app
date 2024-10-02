@@ -10,6 +10,7 @@ import { OK } from "./constants/http";
 import authenticate from "./middleware/authenticate";
 import userRoutes from "./routes/user.route";
 import sessionRoutes from "./routes/session.route";
+
 const app = express();
 
 app.use(express.json());

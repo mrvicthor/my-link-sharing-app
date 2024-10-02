@@ -1,12 +1,16 @@
 import mongoose, { Schema } from "mongoose";
 import { comparePassword, hashPassword } from "../utils/bcrypt";
+
 export interface IUser extends mongoose.Document {
   email: string;
   password: string;
   verified: boolean;
   firstName: string;
   lastName: string;
-  image: string;
+  image: {
+    data: Buffer;
+    contentType: string;
+  };
   profileCompleted: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -27,12 +31,14 @@ export interface IUser extends mongoose.Document {
     | "links"
   >;
 }
+
 const userSchema = new Schema<IUser>(
   {
     email: {
       type: String,
       required: true,
       unique: true,
+      trim: true,
     },
     password: {
       type: String,
@@ -49,7 +55,8 @@ const userSchema = new Schema<IUser>(
       type: String,
     },
     image: {
-      type: String,
+      data: Buffer,
+      contentType: String,
     },
     profileCompleted: {
       type: Boolean,
