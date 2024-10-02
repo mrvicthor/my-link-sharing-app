@@ -1,6 +1,6 @@
 import mongoose, { Types } from "mongoose";
 
-interface ILink {
+export interface ILink {
   _id: Types.ObjectId;
   title: string;
   url: string;

@@ -5,8 +5,9 @@ import PhoneMockup from "@/assets/images/illustration-phone-mockup.svg";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
-import { options } from "@/lib/constants";
-import LinkIcon from "@/components/LinkIcon";
+
+import { useMutation } from "@tanstack/react-query";
+import { createLink } from "@/lib/api";
 import {
   Form,
   FormControl,
@@ -17,19 +18,18 @@ import {
 import {
   Select,
   SelectContent,
-  SelectItem,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
+import { options } from "@/lib/constants";
+import Platform from "@/components/SelectLists";
 
 const Link = z.object({
-  platform: z
-    .string({
-      required_error: "Please select an email to display.",
-    })
-    .email(),
-  urlLink: z.string({
+  title: z.string({
+    required_error: "Please select an platform to display.",
+  }),
+  url: z.string({
     required_error: "Please enter a link.",
   }),
 });
@@ -46,8 +46,8 @@ const Links = () => {
     defaultValues: {
       links: [
         {
-          platform: "GitHub",
-          urlLink: "",
+          title: "GitHub",
+          url: "",
         },
       ],
     },
@@ -58,9 +58,17 @@ const Links = () => {
     name: "links",
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
-  }
+  const { mutate: createNewLink, isError } = useMutation({
+    mutationFn: createLink,
+    onSuccess: () => {
+      console.log("Link created successfully");
+      setIsFormOpen(false);
+    },
+  });
+
+  const onSubmit = (data: z.infer<typeof FormSchema>) =>
+    createNewLink(data.links);
+  // return createNewLink(data.links);
 
   return (
     <section className="container md:px-6">
@@ -69,26 +77,30 @@ const Links = () => {
           <img src={PhoneMockup} alt="phone mockup" />
         </div>
         <div className="box-links bg-[#ffffff] pt-6 rounded-md pb-6">
+          {isError && <p className="text-red-500">Error creating link</p>}
+          <h1 className="font-bold text-2xl px-6 ">Customize your links</h1>
+          <p className="text-[#737373] text-sm mt-4 opacity-80 px-6 w-full">
+            Add/edit/remove links below and then share all your profiles with
+            the world{" "}
+          </p>
+          <div className="px-6 mt-6">
+            <Button
+              variant={"addButton"}
+              size={"lg"}
+              className="font-bold"
+              onClick={() => {
+                setIsFormOpen(true);
+                if (isFormOpen) append({ title: "", url: "" });
+              }}
+            >
+              + Add new link
+            </Button>
+          </div>
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <h1 className="font-bold text-2xl px-6">Customize your links</h1>
-              <p className="text-[#737373] text-sm mt-4 opacity-80 px-6 w-full">
-                Add/edit/remove links below and then share all your profiles
-                with the world{" "}
-              </p>
-              <div className="px-6">
-                <Button
-                  variant={"addButton"}
-                  size={"lg"}
-                  className="font-bold"
-                  onClick={() => {
-                    setIsFormOpen(true);
-                    if (isFormOpen) append({ platform: "", urlLink: "" });
-                  }}
-                >
-                  + Add new link
-                </Button>
-              </div>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="space-y-6 mt-6"
+            >
               {isFormOpen ? (
                 <section className="h-[22.8rem] px-6 space-y-3 overflow-auto">
                   {fields.map((item, index) => (
@@ -107,67 +119,56 @@ const Links = () => {
                           Remove
                         </span>
                       </div>
-                      <div>
-                        <FormField
-                          {...form.register(`links.${index}.platform` as const)}
-                          control={form.control}
-                          render={({ field }) => (
-                            <FormItem>
-                              <FormLabel className="text-[#333333]">
-                                Platform
-                              </FormLabel>
 
-                              <Select
-                                onValueChange={field.onChange}
-                                defaultValue={field.value}
-                              >
-                                <FormControl>
-                                  <SelectTrigger>
-                                    <SelectValue placeholder="GitHub" />
-                                  </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                  {options.map((option) => (
-                                    <div key={option.id}>
-                                      <SelectItem
-                                        value={option.title}
-                                        className="relative text-[#737373] py-2"
-                                      >
-                                        <div className="absolute">
-                                          <LinkIcon
-                                            color=""
-                                            pathString={option.icon}
-                                          />{" "}
-                                        </div>
-                                        <div className="ml-8">
-                                          {option.title}
-                                        </div>
-                                      </SelectItem>
-                                      <hr />
-                                    </div>
-                                  ))}
-                                </SelectContent>
-                              </Select>
-                            </FormItem>
-                          )}
-                        />
-                        <FormField
-                          {...form.register(`links.${index}.urlLink` as const)}
-                          control={form.control}
-                          render={({ field }) => (
-                            <FormItem className="mt-1">
-                              <FormLabel>Link</FormLabel>
+                      <FormField
+                        control={form.control}
+                        name={`links.${index}.title` as const}
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-[#333333]">
+                              Platform
+                            </FormLabel>
+
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
                               <FormControl>
-                                <Input
-                                  className=""
-                                  placeholder="🔗  https://github.com/benwright"
-                                  {...field}
-                                />
+                                <SelectTrigger>
+                                  <SelectValue placeholder="GitHub" />
+                                </SelectTrigger>
                               </FormControl>
-                            </FormItem>
-                          )}
-                        />
-                      </div>
+                              <SelectContent>
+                                {options.map((option) => (
+                                  <div key={option.id}>
+                                    <Platform
+                                      title={option.title}
+                                      icon={option.icon}
+                                    />
+                                    {option.id !== options.length && <hr />}
+                                  </div>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name={`links.${index}.url` as const}
+                        render={({ field }) => (
+                          <FormItem className="mt-1">
+                            <FormLabel>Link</FormLabel>
+                            <FormControl>
+                              <Input
+                                className=""
+                                placeholder="🔗  https://github.com/benwright"
+                                {...field}
+                              />
+                            </FormControl>
+                          </FormItem>
+                        )}
+                      />
                     </div>
                   ))}
                 </section>
@@ -190,6 +191,7 @@ const Links = () => {
               <hr />
               <div className="flex justify-end mt-4 px-6">
                 <Button
+                  type="submit"
                   variant={"saveButton"}
                   className={`${
                     isFormOpen ? "bg-[#633cff]" : "bg-[#beadff]"

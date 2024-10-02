@@ -1,5 +1,5 @@
 interface SVGProps {
-  color: string;
+  color?: string;
   pathString: string;
 }
 const LinkIcon = ({ color, pathString }: SVGProps) => {

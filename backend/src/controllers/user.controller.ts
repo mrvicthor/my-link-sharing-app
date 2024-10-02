@@ -14,14 +14,12 @@ export const getUserHandler = catchErrors(async (req, res) => {
 export const createLinkHandler = catchErrors(async (req, res) => {
   const user = await UserModel.findById(req.userId);
   appAssert(user, NOT_FOUND, "User not found");
-  const { title, url } = req.body;
   const userId = new mongoose.Types.ObjectId(user._id as string);
-  const { link, updatedUser } = await createLink({ userId, title, url });
-  return res
-    .status(CREATED)
-    .json({
-      message: "Link created successfully",
-      link,
-      user: updatedUser.omitPassword(),
-    });
+  const links = req.body;
+  const { newLinks, updatedUser } = await createLink({ userId, links });
+  return res.status(CREATED).json({
+    message: "Link created successfully",
+    newLinks,
+    user: updatedUser.omitPassword(),
+  });
 });
