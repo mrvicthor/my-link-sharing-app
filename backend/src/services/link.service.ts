@@ -19,11 +19,17 @@ export const createLink = async ({ userId, links }: Link) => {
   }));
   const createdLinks = await LinkModel.insertMany(newLinks);
 
+  const linkProperties = createdLinks.map((link) => ({
+    title: link.title,
+    url: link.url,
+    owner: link.owner,
+    _id: link._id,
+  }));
   const updatedUser = await UserModel.findByIdAndUpdate(
     userId,
     {
       $addToSet: {
-        links: { $each: createdLinks.map((link) => link) },
+        links: { $each: linkProperties },
       },
     },
     { new: true, runValidators: true }
@@ -31,7 +37,9 @@ export const createLink = async ({ userId, links }: Link) => {
 
   if (!updatedUser) {
     // If user update fails, delete the created link to maintain consistency
-    // await LinkModel.findByIdAndDelete(link._id);
+    await LinkModel.deleteMany({
+      _id: { $in: createdLinks.map((link) => link._id) },
+    });
     throw new Error("Failed to update user with new link");
   }
   return { newLinks, updatedUser };

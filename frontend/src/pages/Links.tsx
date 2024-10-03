@@ -1,4 +1,5 @@
 import { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 import { z } from "zod";
 import PhoneIcon from "@/assets/images/illustration-empty.svg";
 import PhoneMockup from "@/assets/images/illustration-phone-mockup.svg";
@@ -61,7 +62,7 @@ const Links = () => {
   const { mutate: createNewLink, isError } = useMutation({
     mutationFn: createLink,
     onSuccess: () => {
-      console.log("Link created successfully");
+      toast.success("Link created successfully");
       setIsFormOpen(false);
     },
   });
@@ -72,6 +73,7 @@ const Links = () => {
 
   return (
     <section className="container md:px-6">
+      <Toaster />
       <div className="lg:grid lg:grid-wrapper gap-6">
         <div className="box-phone hidden lg:flex lg:justify-center bg-[#ffffff] py-20 rounded-md">
           <img src={PhoneMockup} alt="phone mockup" />
