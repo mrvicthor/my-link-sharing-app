@@ -29,7 +29,5 @@ export const getLinksHandler = catchErrors(async (req, res) => {
   const user = await UserModel.findById(req.userId);
   appAssert(user, NOT_FOUND, "User not found");
   const links = await LinkModel.find({ owner: req.userId }).lean();
-  return res
-    .status(OK)
-    .json(links.map((link) => link.omitIrrelevantProperties()));
+  return res.status(OK).json(links);
 });

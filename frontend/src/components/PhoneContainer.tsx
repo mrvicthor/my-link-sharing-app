@@ -1,18 +1,28 @@
-import React from "react";
-import useAuth from "@/hooks/useAuth";
-
-type PhoneContainerProps = {
-  children: React.ReactNode;
+import useLinks from "@/hooks/useLinks";
+import PhoneMockup from "@/assets/images/illustration-phone-mockup.svg";
+import LinkItem from "./LinkItem";
+type ILink = {
+  createdAt: Date;
+  owner: string;
+  title: string;
+  updatedAt: Date;
+  url: string;
+  __v: number;
+  _id: string;
 };
-const PhoneContainer: React.FC<PhoneContainerProps> = ({ children }) => {
-  const { user } = useAuth();
 
-  return (
-    <div className="phone-container">
+const PhoneContainer = () => {
+  const { links } = useLinks();
+  const linksArray = links;
+  <img src={PhoneMockup} alt="phone mockup" />;
+  return !linksArray ? (
+    <img src={PhoneMockup} alt="phone mockup" />
+  ) : (
+    <div className="phone-container relative">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         width="308"
-        height="632"
+        height="500"
         fill="none"
         viewBox="0 0 308 632"
       >
@@ -30,7 +40,11 @@ const PhoneContainer: React.FC<PhoneContainerProps> = ({ children }) => {
         <rect width="160" height="16" x="73.5" y="185" fill="#EEE" rx="8" />
         <rect width="72" height="8" x="117.5" y="214" fill="#EEE" rx="4" />
       </svg>
-      <div className="phone-content">{children}</div>
+      <ul className="phone-content absolute top-[50%] -translate-y-[50%] left-[50%] -translate-x-[50%] border border-red-300 w-[11.8125rem]">
+        {linksArray?.map((link: ILink) => (
+          <LinkItem key={link._id} title={link.title} url={link.url} />
+        ))}
+      </ul>
     </div>
   );
 };

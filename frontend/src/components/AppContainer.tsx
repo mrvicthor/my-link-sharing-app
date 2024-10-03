@@ -4,7 +4,7 @@ import { Navigate, Outlet } from "react-router-dom";
 
 const AppContainer = () => {
   const { user, isLoading } = useAuth();
-  console.log("user", user);
+
   return isLoading ? (
     <Loader />
   ) : user ? (

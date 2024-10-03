@@ -2,11 +2,10 @@ import { useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { z } from "zod";
 import PhoneIcon from "@/assets/images/illustration-empty.svg";
-import PhoneMockup from "@/assets/images/illustration-phone-mockup.svg";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
-
+import PhoneContainer from "@/components/PhoneContainer";
 import { useMutation } from "@tanstack/react-query";
 import { createLink } from "@/lib/api";
 import {
@@ -25,6 +24,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { options } from "@/lib/constants";
 import Platform from "@/components/SelectLists";
+import useLinks from "@/hooks/useLinks";
 
 const Link = z.object({
   title: z.string({
@@ -41,7 +41,8 @@ const FormSchema = z.object({
 
 const Links = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
-
+  const { links } = useLinks();
+  console.log("link", links);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -76,7 +77,7 @@ const Links = () => {
       <Toaster />
       <div className="lg:grid lg:grid-wrapper gap-6">
         <div className="box-phone hidden lg:flex lg:justify-center bg-[#ffffff] py-20 rounded-md">
-          <img src={PhoneMockup} alt="phone mockup" />
+          <PhoneContainer />
         </div>
         <div className="box-links bg-[#ffffff] pt-6 rounded-md pb-6">
           {isError && <p className="text-red-500">Error creating link</p>}
