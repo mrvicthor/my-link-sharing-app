@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFieldArray, useForm } from "react-hook-form";
 import PhoneContainer from "@/components/PhoneContainer";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createLink } from "@/lib/api";
 import {
   Form,
@@ -24,7 +24,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { options } from "@/lib/constants";
 import Platform from "@/components/SelectLists";
-import useLinks from "@/hooks/useLinks";
 
 const Link = z.object({
   title: z.string({
@@ -40,9 +39,9 @@ const FormSchema = z.object({
 });
 
 const Links = () => {
+  const queryClient = useQueryClient();
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const { links } = useLinks();
-  console.log("link", links);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -65,6 +64,9 @@ const Links = () => {
     onSuccess: () => {
       toast.success("Link created successfully");
       setIsFormOpen(false);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["links"] });
     },
   });
 

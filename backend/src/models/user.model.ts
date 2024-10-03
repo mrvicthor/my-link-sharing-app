@@ -1,6 +1,12 @@
 import mongoose, { Schema } from "mongoose";
 import { comparePassword, hashPassword } from "../utils/bcrypt";
 
+interface ILink {
+  _id: Schema.Types.ObjectId;
+  title: string;
+  url: string;
+}
+
 export interface IUser extends mongoose.Document {
   email: string;
   password: string;
@@ -14,7 +20,7 @@ export interface IUser extends mongoose.Document {
   profileCompleted: boolean;
   createdAt: Date;
   updatedAt: Date;
-  links: mongoose.Types.ObjectId[];
+  links: ILink[];
   comparePassword: (password: string) => Promise<boolean>;
   omitPassword: () => Pick<
     IUser,
@@ -64,8 +70,19 @@ const userSchema = new Schema<IUser>(
     },
     links: [
       {
-        type: Schema.Types.ObjectId,
-        ref: "Link",
+        _id: {
+          type: Schema.Types.ObjectId,
+          ref: "Link",
+          required: true,
+        },
+        title: {
+          type: String,
+          required: true,
+        },
+        url: {
+          type: String,
+          required: true,
+        },
       },
     ],
   },

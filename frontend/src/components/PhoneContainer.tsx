@@ -1,21 +1,21 @@
-import useLinks from "@/hooks/useLinks";
 import PhoneMockup from "@/assets/images/illustration-phone-mockup.svg";
 import LinkItem from "./LinkItem";
+import useLinks from "@/hooks/useLinks";
 type ILink = {
-  createdAt: Date;
-  owner: string;
   title: string;
-  updatedAt: Date;
   url: string;
-  __v: number;
   _id: string;
+  _v: number;
+  createdAt: Date;
+  updatedAt: Date;
+  owner: string;
 };
 
 const PhoneContainer = () => {
   const { links } = useLinks();
-  const linksArray = links;
-  <img src={PhoneMockup} alt="phone mockup" />;
-  return !linksArray ? (
+  console.log("links", links);
+
+  return links && !links?.length ? (
     <img src={PhoneMockup} alt="phone mockup" />
   ) : (
     <div className="phone-container relative">
@@ -40,10 +40,14 @@ const PhoneContainer = () => {
         <rect width="160" height="16" x="73.5" y="185" fill="#EEE" rx="8" />
         <rect width="72" height="8" x="117.5" y="214" fill="#EEE" rx="4" />
       </svg>
-      <ul className="phone-content absolute top-[50%] -translate-y-[50%] left-[50%] -translate-x-[50%] border border-red-300 w-[11.8125rem]">
-        {linksArray?.map((link: ILink) => (
+      <ul className="phone-content absolute top-[40%]  left-[50%] -translate-x-[50%] w-[11.8125rem] space-y-4">
+        {links?.map((link: ILink) => (
           <LinkItem key={link._id} title={link.title} url={link.url} />
         ))}
+        {links.length < 2 && <li className="bg-[#d9d9d9] h-8 rounded-md"></li>}
+        {links.length < 3 && <li className="bg-[#d9d9d9] h-8 rounded-md"></li>}
+        {links.length < 4 && <li className="bg-[#d9d9d9] h-8 rounded-md"></li>}
+        {links.length < 5 && <li className="bg-[#d9d9d9] h-8 rounded-md"></li>}
       </ul>
     </div>
   );
