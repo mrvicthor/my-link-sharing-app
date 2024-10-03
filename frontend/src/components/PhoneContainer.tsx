@@ -1,9 +1,12 @@
 import React from "react";
+import useAuth from "@/hooks/useAuth";
 
 type PhoneContainerProps = {
   children: React.ReactNode;
 };
 const PhoneContainer: React.FC<PhoneContainerProps> = ({ children }) => {
+  const { user } = useAuth();
+
   return (
     <div className="phone-container">
       <svg

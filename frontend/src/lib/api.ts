@@ -36,3 +36,4 @@ export const resetPassword = async (data: ResetPasswordData) =>
 export const getUser = async () => API.get("/user");
 export const createLink = async (data: LinkData[]) =>
   API.post("/user/create-link", data);
+export const getLinks = async () => API.get("/user/links");
