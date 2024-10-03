@@ -4,6 +4,7 @@ import UserModel from "../models/user.model";
 import { createLink } from "../services/link.service";
 import appAssert from "../utils/appAssert";
 import catchErrors from "../utils/catchErrors";
+import { LinkModel } from "../models/link.model";
 
 export const getUserHandler = catchErrors(async (req, res) => {
   const user = await UserModel.findById(req.userId);
@@ -22,4 +23,13 @@ export const createLinkHandler = catchErrors(async (req, res) => {
     newLinks,
     user: updatedUser.omitPassword(),
   });
+});
+
+export const getLinksHandler = catchErrors(async (req, res) => {
+  const user = await UserModel.findById(req.userId);
+  appAssert(user, NOT_FOUND, "User not found");
+  const links = await LinkModel.find({ owner: req.userId }).lean();
+  return res
+    .status(OK)
+    .json(links.map((link) => link.omitIrrelevantProperties()));
 });
