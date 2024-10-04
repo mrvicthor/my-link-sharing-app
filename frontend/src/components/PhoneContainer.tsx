@@ -40,14 +40,22 @@ const PhoneContainer = () => {
         <rect width="160" height="16" x="73.5" y="185" fill="#EEE" rx="8" />
         <rect width="72" height="8" x="117.5" y="214" fill="#EEE" rx="4" />
       </svg>
-      <ul className="phone-content absolute top-[40%]  left-[50%] -translate-x-[50%] w-[11.8125rem] space-y-4">
+      <ul className="phone-content absolute top-[42%]  left-[50%] -translate-x-[50%] w-[11.8125rem] space-y-4">
         {links?.map((link: ILink) => (
           <LinkItem key={link._id} title={link.title} url={link.url} />
         ))}
-        {links.length < 2 && <li className="bg-[#d9d9d9] h-8 rounded-md"></li>}
-        {links.length < 3 && <li className="bg-[#d9d9d9] h-8 rounded-md"></li>}
-        {links.length < 4 && <li className="bg-[#d9d9d9] h-8 rounded-md"></li>}
-        {links.length < 5 && <li className="bg-[#d9d9d9] h-8 rounded-md"></li>}
+        {links && links.length < 2 && (
+          <li className="bg-[#d9d9d9] h-8 rounded-md"></li>
+        )}
+        {links && links.length < 3 && (
+          <li className="bg-[#d9d9d9] h-8 rounded-md"></li>
+        )}
+        {links && links.length < 4 && (
+          <li className="bg-[#d9d9d9] h-8 rounded-md"></li>
+        )}
+        {links && links.length < 5 && (
+          <li className="bg-[#d9d9d9] h-8 rounded-md"></li>
+        )}
       </ul>
     </div>
   );

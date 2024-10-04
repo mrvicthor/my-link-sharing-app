@@ -14,6 +14,7 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form";
 import {
   Select,
@@ -27,11 +28,13 @@ import Platform from "@/components/SelectLists";
 
 const Link = z.object({
   title: z.string({
-    required_error: "Please select an platform to display.",
+    message: "Please select an platform to display.",
   }),
-  url: z.string({
-    required_error: "Please enter a link.",
-  }),
+  url: z
+    .string({
+      message: "Can't be empty.",
+    })
+    .min(1, { message: "Can't be empty." }),
 });
 
 const FormSchema = z.object({
@@ -59,7 +62,11 @@ const Links = () => {
     name: "links",
   });
 
-  const { mutate: createNewLink, isError } = useMutation({
+  const {
+    mutate: createNewLink,
+    isError,
+    isPending,
+  } = useMutation({
     mutationFn: createLink,
     onSuccess: () => {
       toast.success("Link created successfully");
@@ -162,15 +169,26 @@ const Links = () => {
                         control={form.control}
                         name={`links.${index}.url` as const}
                         render={({ field }) => (
-                          <FormItem className="mt-1">
+                          <FormItem className="mt-1 relative">
                             <FormLabel>Link</FormLabel>
                             <FormControl>
                               <Input
-                                className=""
+                                className={`${
+                                  form.formState.errors.links &&
+                                  form.formState.errors.links[index]?.url &&
+                                  "border-red-500"
+                                }`}
                                 placeholder="🔗  https://github.com/benwright"
                                 {...field}
                               />
                             </FormControl>
+
+                            {form.formState.errors.links &&
+                              form.formState.errors.links[index]?.url && (
+                                <small className="text-[#ea5555] absolute right-4 top-8 text-xs">
+                                  Can&apos;t be empty
+                                </small>
+                              )}
                           </FormItem>
                         )}
                       />
@@ -179,12 +197,12 @@ const Links = () => {
                 </section>
               ) : (
                 <section className="px-6">
-                  <div className="bg-[#fafafa] flex flex-col justify-center items-center mt-4 rounded-md gap-y-6 py-10 mb-6 max-h-[19.1875rem]">
+                  <div className="bg-[#fafafa] flex flex-col justify-center items-center mt-4 rounded-md gap-y-6 py-8 mb-6 h-[20.5rem]">
                     <img src={PhoneIcon} alt="phone icon" />
                     <h2 className="text-2xl font-bold">
                       Let's get you started
                     </h2>
-                    <p className="text-center text-[#737373] text-sm opacity-80">
+                    <p className="text-center text-[#737373] text-xs opacity-80 w-[50%]">
                       Use the "Add new link" button to get started. Once you
                       have more than one link, you can reorder and edit them.
                       We're here to help you share your profiles with everyone.
@@ -198,6 +216,7 @@ const Links = () => {
                 <Button
                   type="submit"
                   variant={"saveButton"}
+                  disabled={!form.formState.isDirty || isPending}
                   className={`${
                     isFormOpen ? "bg-[#633cff]" : "bg-[#beadff]"
                   } w-full md:w-auto`}
