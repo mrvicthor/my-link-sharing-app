@@ -44,17 +44,12 @@ const PhoneContainer = () => {
         {links?.map((link: ILink) => (
           <LinkItem key={link._id} title={link.title} url={link.url} />
         ))}
-        {links && links.length < 2 && (
-          <li className="bg-[#d9d9d9] h-8 rounded-md"></li>
-        )}
-        {links && links.length < 3 && (
-          <li className="bg-[#d9d9d9] h-8 rounded-md"></li>
-        )}
-        {links && links.length < 4 && (
-          <li className="bg-[#d9d9d9] h-8 rounded-md"></li>
-        )}
-        {links && links.length < 5 && (
-          <li className="bg-[#d9d9d9] h-8 rounded-md"></li>
+        {[...Array(4)].map(
+          (_, index) =>
+            links &&
+            links.length < index + 2 && (
+              <li key={index} className="bg-[#d9d9d9] h-8 rounded-md"></li>
+            )
         )}
       </ul>
     </div>
