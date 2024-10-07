@@ -10,7 +10,6 @@ type Props = {
 };
 const LinkItem = ({ url, title }: Props) => {
   const color = getMatchingColor(title);
-  console.log(color, "color");
   const icon = getIcon(title);
   return (
     <li

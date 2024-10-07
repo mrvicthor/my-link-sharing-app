@@ -1,4 +1,5 @@
 import PhoneMockup from "@/assets/images/illustration-phone-mockup.svg";
+import { useLocation } from "react-router-dom";
 import LinkItem from "./LinkItem";
 import useLinks from "@/hooks/useLinks";
 type ILink = {
@@ -13,7 +14,7 @@ type ILink = {
 
 const PhoneContainer = () => {
   const { links } = useLinks();
-  console.log("links", links);
+  const { pathname } = useLocation();
 
   return links && !links?.length ? (
     <img src={PhoneMockup} alt="phone mockup" />
@@ -47,6 +48,7 @@ const PhoneContainer = () => {
         {[...Array(4)].map(
           (_, index) =>
             links &&
+            pathname !== "/profile" &&
             links.length < index + 2 && (
               <li key={index} className="bg-[#d9d9d9] h-8 rounded-md"></li>
             )

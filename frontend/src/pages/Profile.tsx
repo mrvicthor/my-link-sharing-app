@@ -5,12 +5,20 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import useAuth from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createProfile } from "@/lib/api";
+import toast from "react-hot-toast";
+
+import { useState } from "react";
+
+const MAX_FILE_SIZE = 1000000;
+const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png"];
 
 const profileSchema = z.object({
   firstName: z.string().min(1, { message: "Can't be empty" }),
   lastName: z.string().min(1, { message: "Can't be empty" }),
   image: z.object({
-    data: z.string(),
+    data: z.instanceof(File).or(z.string()),
     contentType: z.string(),
   }),
   email: z.string().email({ message: "Invalid email" }),
@@ -19,11 +27,14 @@ const profileSchema = z.object({
 type ProfileFormData = z.infer<typeof profileSchema>;
 
 const Profile = () => {
+  const queryClient = useQueryClient();
+  const [imageError, setImageError] = useState<string | null>(null);
   const { user } = useAuth();
   const {
     register,
     handleSubmit,
     formState: { errors, isDirty },
+    setValue,
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
@@ -31,7 +42,88 @@ const Profile = () => {
     },
   });
 
-  const onSubmit = (data: ProfileFormData) => console.log(data);
+  const resizeImage = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+          if (width > height) {
+            if (width > 800) {
+              height *= 800 / width;
+              width = 800;
+            }
+          } else {
+            if (height > 800) {
+              width *= 800 / height;
+              height = 800;
+            }
+          }
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx!.drawImage(img, 0, 0, width, height);
+          const dataUrl = canvas.toDataURL(file.type, 0.7);
+          resolve(dataUrl);
+        };
+        img.src = event.target!.result as string;
+      };
+      reader.onerror = (error) => reject(error);
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    setImageError(null);
+    if (file) {
+      if (!ALLOWED_FILE_TYPES.includes(file.type)) {
+        setImageError(
+          "File type not supported. Please upload a JPEG, PNG, or WebP image."
+        );
+        return;
+      }
+
+      if (file.size > MAX_FILE_SIZE) {
+        setImageError("Image is too large. Please try a smaller image.");
+        return;
+      }
+
+      setValue("image", {
+        data: file,
+        contentType: file.type,
+      });
+    }
+  };
+
+  const {
+    mutate: updateProfile,
+    isPending,
+    isError,
+  } = useMutation({
+    mutationFn: createProfile,
+    onSuccess: () => toast.success("Profile updated successfully"),
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ["auth"] }),
+  });
+
+  const onSubmit = async (data: ProfileFormData) => {
+    console.log(data);
+    const { email, ...rest } = data;
+    if (rest.image && rest.image.data instanceof File) {
+      try {
+        const resizedImage = await resizeImage(rest.image.data);
+        rest.image.data = resizedImage;
+      } catch (error) {
+        console.error("Error resizing image:", error);
+        setImageError("Error processing image. Please try again.");
+        return;
+      }
+    }
+    updateProfile(rest);
+  };
   return (
     <section className="container md:px-6">
       <div className="lg:grid lg:grid-wrapper gap-6">
@@ -39,6 +131,7 @@ const Profile = () => {
           <PhoneContainer />
         </div>
         <div className="box-links bg-[#ffffff] pt-6 rounded-md pb-6">
+          {isError && <p className="text-red-500">Error updating profile</p>}
           <form onSubmit={handleSubmit(onSubmit)} className="">
             <h1 className="font-bold text-2xl px-6 capitalize">
               profile details
@@ -56,11 +149,21 @@ const Profile = () => {
                   <img src={UploadIcon} alt="profile picture" />
                   <span className="flex">+ Upload Image</span>
                 </label>
-                <input type="file" id="profile-picture" hidden />
+                <input
+                  type="file"
+                  id="profile-picture"
+                  accept="image/*"
+                  onChange={handleImageUpload}
+                  hidden
+                />
                 <p>
                   Image must be below 1024x1024px. <br />
                   Use PNG or JPG format.
                 </p>
+                {imageError && <span>{imageError}</span>}
+                {errors.image && (
+                  <p className="text-[#ff3939]">Image upload failed</p>
+                )}
               </div>
             </div>
             <div className="mx-6 bg-[#fafafa] px-4 mt-6 rounded-md py-4 text-[#737373]">
@@ -158,7 +261,7 @@ const Profile = () => {
               <Button
                 type="submit"
                 variant={"saveButton"}
-                disabled={!isDirty}
+                disabled={!isDirty || isPending}
                 className={`bg-[#633cff] hover:bg-[#beadff] w-full md:w-auto`}
               >
                 Save

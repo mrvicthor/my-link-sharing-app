@@ -19,9 +19,14 @@ type LinkData = {
   url: string;
 };
 
-// type ILink = {
-//   link: LinkData;
-// };
+type ProfileData = {
+  firstName: string;
+  lastName: string;
+  image: {
+    data: File | string;
+    contentType: string;
+  };
+};
 
 export const login = async (data: LoginData) => API.post("/auth/login", data);
 export const createUser = async (data: RegisterData) =>
@@ -37,3 +42,6 @@ export const getUser = async () => API.get("/user");
 export const createLink = async (data: LinkData[]) =>
   API.post("/user/create-link", data);
 export const getLinks = async () => API.get("/user/links");
+
+export const createProfile = async (data: ProfileData) =>
+  API.post("/user/create-profile", data);

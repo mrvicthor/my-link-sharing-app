@@ -1,10 +1,12 @@
 import mongoose from "mongoose";
-import { CREATED, NOT_FOUND, OK } from "../constants/http";
+import { BAD_REQUEST, CREATED, NOT_FOUND, OK } from "../constants/http";
 import UserModel from "../models/user.model";
 import { createLink } from "../services/link.service";
 import appAssert from "../utils/appAssert";
 import catchErrors from "../utils/catchErrors";
 import { LinkModel } from "../models/link.model";
+import { createProfileSchema } from "./auth.schemas";
+import { createProfile } from "../services/auth.service";
 
 export const getUserHandler = catchErrors(async (req, res) => {
   const user = await UserModel.findById(req.userId);
@@ -30,4 +32,19 @@ export const getLinksHandler = catchErrors(async (req, res) => {
   appAssert(user, NOT_FOUND, "User not found");
   const links = await LinkModel.find({ owner: req.userId }).lean();
   return res.status(OK).json(links);
+});
+
+export const createProfileHandler = catchErrors(async (req, res) => {
+  console.log("victor", req.body);
+
+  if (!req.body.image)
+    return res.status(BAD_REQUEST).json({ message: "No file uploaded" });
+  const request = createProfileSchema.parse(req.body);
+  const userId = req.userId;
+  const image = {
+    data: req.body.image.data,
+    contentType: req.body.image.contentType,
+  };
+  await createProfile({ ...request, userId, image });
+  return res.status(OK).json({ message: "Profile created successfully" });
 });

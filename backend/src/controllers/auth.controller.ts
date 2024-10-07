@@ -4,19 +4,17 @@ import {
   verificationSchema,
   emailSchema,
   resetPasswordSchema,
-  createProfileSchema,
 } from "./auth.schemas";
 import catchErrors from "../utils/catchErrors";
 import {
   createAccount,
-  createProfile,
   loginUser,
   refreshUserAccessToken,
   resetPassword,
   sendPasswordResetEmail,
   verifyEmail,
 } from "../services/auth.service";
-import { BAD_REQUEST, CREATED, OK, UNAUTHORIZED } from "../constants/http";
+import { CREATED, OK, UNAUTHORIZED } from "../constants/http";
 import {
   setAuthCookies,
   clearAuthCookies,
@@ -100,14 +98,4 @@ export const resetPasswordHandler = catchErrors(async (req, res) => {
   return clearAuthCookies(res)
     .status(OK)
     .json({ message: "Password reset successfully" });
-});
-
-export const createProfileHandler = catchErrors(async (req, res) => {
-  if (!req.file)
-    return res.status(BAD_REQUEST).json({ message: "No file uploaded" });
-  const request = createProfileSchema.parse(req.body);
-  const userId = req.userId;
-  const image = { data: req.file.buffer, contentType: req.file.mimetype };
-  await createProfile({ ...request, userId, image });
-  return res.status(OK).json({ message: "Profile created successfully" });
 });
