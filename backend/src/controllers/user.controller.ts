@@ -7,6 +7,7 @@ import catchErrors from "../utils/catchErrors";
 import { LinkModel } from "../models/link.model";
 import { createProfileSchema } from "./auth.schemas";
 import { createProfile } from "../services/auth.service";
+import cloudinary from "../config/cloudinary";
 
 export const getUserHandler = catchErrors(async (req, res) => {
   const user = await UserModel.findById(req.userId);
@@ -35,16 +36,27 @@ export const getLinksHandler = catchErrors(async (req, res) => {
 });
 
 export const createProfileHandler = catchErrors(async (req, res) => {
-  console.log("victor", req.body);
+  const { firstName, lastName, image } = createProfileSchema.parse(req.body);
+  let imageUrl = null;
+  if (image) {
+    const base64Data = image.split(",")[1];
+    const result = await cloudinary.uploader.upload(
+      `data:image/png;base64,${base64Data}`,
+      {
+        folder: "link-sharing",
+      }
+    );
 
-  if (!req.body.image)
-    return res.status(BAD_REQUEST).json({ message: "No file uploaded" });
-  const request = createProfileSchema.parse(req.body);
+    console.log(result.secure_url, "vicky");
+    imageUrl = result.secure_url;
+  }
   const userId = req.userId;
-  const image = {
-    data: req.body.image.data,
-    contentType: req.body.image.contentType,
-  };
-  await createProfile({ ...request, userId, image });
+
+  await createProfile({
+    firstName,
+    lastName,
+    userId,
+    image: imageUrl as string,
+  });
   return res.status(OK).json({ message: "Profile created successfully" });
 });

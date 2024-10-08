@@ -31,8 +31,5 @@ export const resetPasswordSchema = z.object({
 export const createProfileSchema = z.object({
   firstName: z.string().min(3),
   lastName: z.string().min(3),
-  image: z.object({
-    data: z.instanceof(File).or(z.string()),
-    contentType: z.string(),
-  }),
+  image: z.string(),
 });

@@ -1,5 +1,4 @@
 import { Router } from "express";
-import multer from "multer";
 import {
   createLinkHandler,
   createProfileHandler,
@@ -8,16 +7,10 @@ import {
 } from "../controllers/user.controller";
 
 const userRoutes = Router();
-const storage = multer.memoryStorage();
-const upload = multer({ storage });
 
 userRoutes.get("/", getUserHandler);
 userRoutes.post("/create-link", createLinkHandler);
 userRoutes.get("/links", getLinksHandler);
-userRoutes.post(
-  "/create-profile",
-  upload.single("image"),
-  createProfileHandler
-);
+userRoutes.post("/create-profile", createProfileHandler);
 
 export default userRoutes;

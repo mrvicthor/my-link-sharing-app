@@ -1,15 +1,14 @@
-import PhoneContainer from "@/components/PhoneContainer";
-import UploadIcon from "@/assets/images/icon-upload-image.svg";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import z from "zod";
-import useAuth from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProfile } from "@/lib/api";
 import toast from "react-hot-toast";
-
-import { useState } from "react";
+import { useForm } from "react-hook-form";
+import z from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import PhoneContainer from "@/components/PhoneContainer";
+import UploadIcon from "@/assets/images/icon-upload-image.svg";
+import useAuth from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
 const MAX_FILE_SIZE = 1000000;
 const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png"];
@@ -17,10 +16,7 @@ const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png"];
 const profileSchema = z.object({
   firstName: z.string().min(1, { message: "Can't be empty" }),
   lastName: z.string().min(1, { message: "Can't be empty" }),
-  image: z.object({
-    data: z.instanceof(File).or(z.string()),
-    contentType: z.string(),
-  }),
+  image: z.string(),
   email: z.string().email({ message: "Invalid email" }),
 });
 
@@ -29,6 +25,7 @@ type ProfileFormData = z.infer<typeof profileSchema>;
 const Profile = () => {
   const queryClient = useQueryClient();
   const [imageError, setImageError] = useState<string | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   const { user } = useAuth();
   const {
     register,
@@ -42,60 +39,32 @@ const Profile = () => {
     },
   });
 
-  const resizeImage = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.onload = (event) => {
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement("canvas");
-          let width = img.width;
-          let height = img.height;
-          if (width > height) {
-            if (width > 800) {
-              height *= 800 / width;
-              width = 800;
-            }
-          } else {
-            if (height > 800) {
-              width *= 800 / height;
-              height = 800;
-            }
-          }
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext("2d");
-          ctx!.drawImage(img, 0, 0, width, height);
-          const dataUrl = canvas.toDataURL(file.type, 0.7);
-          resolve(dataUrl);
-        };
-        img.src = event.target!.result as string;
-      };
-      reader.onerror = (error) => reject(error);
-      reader.readAsDataURL(file);
-    });
-  };
-
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     setImageError(null);
+    setImagePreview(null);
     if (file) {
       if (!ALLOWED_FILE_TYPES.includes(file.type)) {
-        setImageError(
-          "File type not supported. Please upload a JPEG, PNG, or WebP image."
-        );
         return;
       }
 
       if (file.size > MAX_FILE_SIZE) {
-        setImageError("Image is too large. Please try a smaller image.");
         return;
       }
 
-      setValue("image", {
-        data: file,
-        contentType: file.type,
-      });
+      console.log(file);
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        console.log("result", reader);
+        setImagePreview(base64String);
+        setValue("image", base64String);
+      };
+      reader.readAsDataURL(file);
+      // setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -110,18 +79,7 @@ const Profile = () => {
   });
 
   const onSubmit = async (data: ProfileFormData) => {
-    console.log(data);
     const { email, ...rest } = data;
-    if (rest.image && rest.image.data instanceof File) {
-      try {
-        const resizedImage = await resizeImage(rest.image.data);
-        rest.image.data = resizedImage;
-      } catch (error) {
-        console.error("Error resizing image:", error);
-        setImageError("Error processing image. Please try again.");
-        return;
-      }
-    }
     updateProfile(rest);
   };
   return (
@@ -161,6 +119,13 @@ const Profile = () => {
                   Use PNG or JPG format.
                 </p>
                 {imageError && <span>{imageError}</span>}
+                {imagePreview && (
+                  <img
+                    src={imagePreview}
+                    alt="Preview"
+                    className="mt-2 h-24 w-24 rounded-full"
+                  />
+                )}
                 {errors.image && (
                   <p className="text-[#ff3939]">Image upload failed</p>
                 )}

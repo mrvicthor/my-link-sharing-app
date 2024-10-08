@@ -271,10 +271,7 @@ type ICreateProfile = {
   firstName: string;
   lastName: string;
   userId: mongoose.Types.ObjectId;
-  image: {
-    data: Buffer;
-    contentType: string;
-  };
+  image: string;
 };
 export const createProfile = async ({
   firstName,

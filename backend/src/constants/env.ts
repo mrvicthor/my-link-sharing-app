@@ -16,3 +16,6 @@ export const RESEND_API_KEY = getEnv("RESEND_API_KEY");
 export const GMAIL_ACCT = getEnv("GMAIL_ACCT");
 export const GMAIL_PASS = getEnv("GMAIL_PASS");
 export const EMAIL_SENDER = getEnv("EMAIL_SENDER");
+export const CLOUDINARY_NAME = getEnv("CLOUDINARY_NAME");
+export const CLOUDINARY_API_KEY = getEnv("CLOUDINARY_API_KEY");
+export const CLOUDINARY_API_SECRET = getEnv("CLOUDINARY_API_SECRET");

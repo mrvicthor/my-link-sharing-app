@@ -78,7 +78,6 @@ const Links = () => {
 
   const onSubmit = (data: z.infer<typeof FormSchema>) =>
     createNewLink(data.links);
-  // return createNewLink(data.links);
 
   return (
     <section className="container md:px-6">
