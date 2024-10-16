@@ -5,16 +5,19 @@ import { getMatchingColor } from "@/utils/getMatchingColor";
 import { getIcon } from "@/utils/getIcon";
 
 type Props = {
+  id: string;
   url: string;
   title: string;
 };
-const LinkItem = ({ url, title }: Props) => {
+const LinkItem = ({ id, url, title }: Props) => {
   const color = getMatchingColor(title);
   const icon = getIcon(title);
+  const handleLinkDetails = (id: string) => console.log(id);
   return (
     <li
       style={{ backgroundColor: color }}
-      className={`p-2 rounded-md flex items-center`}
+      className={`p-2 rounded-md flex items-center cursor-pointer`}
+      onClick={() => handleLinkDetails(id)}
     >
       <LinkIcon color="white" pathString={icon} />
       <span className="text-white block text-xs">{title}</span>

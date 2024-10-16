@@ -70,6 +70,7 @@ const Links = () => {
     onSuccess: () => {
       toast.success("Link created successfully");
       setIsFormOpen(false);
+      form.reset();
     },
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["links"] });

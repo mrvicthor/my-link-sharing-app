@@ -132,7 +132,7 @@
   }
 
   .grid-wrapper {
-    grid-template-columns: 1fr 50.5rem;
+    grid-template-columns: 35rem 1fr;
     grid-template-rows: 80vh;
   }
 }
