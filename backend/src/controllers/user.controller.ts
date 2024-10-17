@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { z } from "zod";
 import { BAD_REQUEST, CREATED, NOT_FOUND, OK } from "../constants/http";
 import UserModel from "../models/user.model";
 import { createLink } from "../services/link.service";
@@ -47,7 +48,6 @@ export const createProfileHandler = catchErrors(async (req, res) => {
       }
     );
 
-    console.log(result.secure_url, "vicky");
     imageUrl = result.secure_url;
   }
   const userId = req.userId;
@@ -59,4 +59,14 @@ export const createProfileHandler = catchErrors(async (req, res) => {
     image: imageUrl as string,
   });
   return res.status(OK).json({ message: "Profile created successfully" });
+});
+
+export const deleteLinkHandler = catchErrors(async (req, res) => {
+  const linkId = req.params.id;
+  const deleted = await LinkModel.findOneAndDelete({
+    _id: linkId,
+    owner: req.userId,
+  });
+  appAssert(deleted, NOT_FOUND, "Link not found");
+  return res.status(OK).json({ message: "Link deleted successfully" });
 });
