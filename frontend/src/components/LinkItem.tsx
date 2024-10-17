@@ -1,6 +1,6 @@
 import LinkIcon from "./LinkIcon";
 import ArrowIcon from "@/assets/images/icon-arrow-right.svg";
-import { Link } from "react-router-dom";
+import { Link, redirect } from "react-router-dom";
 import { getMatchingColor } from "@/utils/getMatchingColor";
 import { getIcon } from "@/utils/getIcon";
 import { options } from "@/lib/constants";
@@ -18,6 +18,9 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Select, SelectContent, SelectTrigger, SelectValue } from "./ui/select";
 import Platform from "./SelectLists";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { deleteLink } from "@/lib/api";
+import toast, { Toaster } from "react-hot-toast";
 
 type Props = {
   id: string;
@@ -25,16 +28,28 @@ type Props = {
   title: string;
 };
 const LinkItem = ({ id, url, title }: Props) => {
+  const queryClient = useQueryClient();
   const color = getMatchingColor(title);
   const icon = getIcon(title);
-  const handleLinkDetails = (id: string) => console.log(id);
+  // const handleLinkDetails = (id: string) => console.log(id);
+
+  const { mutate: deleteOne } = useMutation({
+    mutationFn: deleteLink,
+    onSuccess: () => {
+      toast.success("Link deleted successfully");
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["links"] });
+      redirect("/");
+    },
+  });
   return (
     <Dialog>
+      <Toaster />
       <DialogTrigger asChild>
         <li
           style={{ backgroundColor: color }}
           className={`p-2 rounded-md flex items-center cursor-pointer`}
-          onClick={() => handleLinkDetails(id)}
         >
           <LinkIcon color="white" pathString={icon} />
           <span className="text-white block text-xs">{title}</span>
@@ -78,7 +93,9 @@ const LinkItem = ({ id, url, title }: Props) => {
           </div>
         </div>
         <DialogFooter>
-          <Button variant="destructive">Delete</Button>
+          <Button variant="destructive" onClick={() => deleteOne(id)}>
+            Delete
+          </Button>
           <Button type="submit" variant="saveButton">
             Save changes
           </Button>

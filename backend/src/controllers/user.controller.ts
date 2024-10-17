@@ -67,6 +67,17 @@ export const deleteLinkHandler = catchErrors(async (req, res) => {
     _id: linkId,
     owner: req.userId,
   });
+
+  await UserModel.updateOne(
+    {
+      _id: req.userId,
+    },
+    {
+      $pull: {
+        links: linkId,
+      },
+    }
+  );
   appAssert(deleted, NOT_FOUND, "Link not found");
   return res.status(OK).json({ message: "Link deleted successfully" });
 });
