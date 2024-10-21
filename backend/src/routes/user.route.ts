@@ -5,6 +5,7 @@ import {
   deleteLinkHandler,
   getLinksHandler,
   getUserHandler,
+  updateLinkHandler,
 } from "../controllers/user.controller";
 
 const userRoutes = Router();
@@ -14,5 +15,6 @@ userRoutes.post("/create-link", createLinkHandler);
 userRoutes.get("/links", getLinksHandler);
 userRoutes.post("/create-profile", createProfileHandler);
 userRoutes.delete("/links/:id", deleteLinkHandler);
+userRoutes.put("/links/:id", updateLinkHandler);
 
 export default userRoutes;

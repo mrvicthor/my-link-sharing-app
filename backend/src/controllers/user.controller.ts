@@ -81,3 +81,9 @@ export const deleteLinkHandler = catchErrors(async (req, res) => {
   appAssert(deleted, NOT_FOUND, "Link not found");
   return res.status(OK).json({ message: "Link deleted successfully" });
 });
+
+export const updateLinkHandler = catchErrors(async (req, res) => {
+  const linkId = req.params.id;
+  const updatedLink = req.body;
+  console.log("update", updateLinkHandler);
+});
