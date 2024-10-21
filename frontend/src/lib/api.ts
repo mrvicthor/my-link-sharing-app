@@ -47,3 +47,8 @@ export const deleteLink = async (data: string) => {
   console.log("data", data);
   API.delete(`/user/links/${data}`);
 };
+
+export const updateLink = async (data: string) => {
+  console.log("data", data);
+  API.put(`/user/links/${data}`);
+};

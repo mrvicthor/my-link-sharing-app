@@ -61,7 +61,7 @@ const LinkItem = ({ id, url, title }: Props) => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit link</DialogTitle>
+          <DialogTitle>Edit or Delete link</DialogTitle>
           <DialogDescription>
             Make changes to your link here. Click save when you're done.
           </DialogDescription>
