@@ -85,5 +85,33 @@ export const deleteLinkHandler = catchErrors(async (req, res) => {
 export const updateLinkHandler = catchErrors(async (req, res) => {
   const linkId = req.params.id;
   const updatedLink = req.body;
-  console.log("update", updateLinkHandler);
+  const updatedLinkDoc = await LinkModel.findByIdAndUpdate(
+    linkId,
+    updatedLink,
+    { new: true, runValidators: true }
+  );
+  if (!updatedLinkDoc) {
+    return res.status(NOT_FOUND).json({ message: "Link not found" });
+  }
+  const userUpdatedresult = await UserModel.updateOne(
+    {
+      _id: req.userId,
+      "links._id": linkId,
+    },
+    {
+      $set: {
+        "links.$.title": updatedLink.title,
+        "links.$.url": updatedLink.url,
+      },
+    }
+  );
+  if (userUpdatedresult.matchedCount === 0) {
+    return res
+      .status(NOT_FOUND)
+      .json({ error: "User not found or Link not associated with user" });
+  }
+
+  return res
+    .status(OK)
+    .json({ message: "Link updated successfully", link: updatedLinkDoc });
 });

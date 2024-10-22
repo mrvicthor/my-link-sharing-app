@@ -25,6 +25,10 @@ type ProfileData = {
   image: string;
 };
 
+interface UpdateLink extends LinkData {
+  id: string;
+}
+
 export const login = async (data: LoginData) => API.post("/auth/login", data);
 export const createUser = async (data: RegisterData) =>
   API.post("/auth/register", data);
@@ -43,12 +47,10 @@ export const getLinks = async () => API.get("/user/links");
 export const createProfile = async (data: ProfileData) =>
   API.post("/user/create-profile", data);
 
-export const deleteLink = async (data: string) => {
-  console.log("data", data);
+export const deleteLink = async (data: string) =>
   API.delete(`/user/links/${data}`);
-};
 
-export const updateLink = async (data: string) => {
-  console.log("data", data);
-  API.put(`/user/links/${data}`);
+export const updateLink = async (data: UpdateLink) => {
+  const { id, ...rest } = data;
+  API.put(`/user/links/${id}`, rest);
 };
