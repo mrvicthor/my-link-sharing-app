@@ -63,7 +63,7 @@ const PhoneContainer = () => {
         )}
       </ul>
       {user?.image && user.image ? (
-        <div className="absolute h-20 w-20 top-16 rounded-full left-[50%] -translate-x-[50%]">
+        <div className="absolute h-20 w-20 overflow-hidden top-16 rounded-full left-[50%] -translate-x-[50%]">
           <img
             src={user.image}
             alt={`${user.firstName}-image`}

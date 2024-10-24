@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProfile } from "@/lib/api";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -9,7 +9,8 @@ import PhoneContainer from "@/components/PhoneContainer";
 import UploadIcon from "@/assets/images/icon-upload-image.svg";
 import useAuth from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-
+import IconChangesSaved from "@/assets/images/icon-changes-saved.svg";
+import WhiteIconUpload from "@/assets/images/icon-upload-white-image.svg";
 const MAX_FILE_SIZE = 1000000;
 const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png"];
 
@@ -36,6 +37,9 @@ const Profile = () => {
     resolver: zodResolver(profileSchema),
     defaultValues: {
       email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      image: user.image,
     },
   });
 
@@ -74,7 +78,19 @@ const Profile = () => {
     isError,
   } = useMutation({
     mutationFn: createProfile,
-    onSuccess: () => toast.success("Profile updated successfully"),
+    onSuccess: () =>
+      toast.custom((t) => (
+        <div
+          className={`${
+            t.visible ? "animate-enter" : "animate-leave"
+          } max-w-md w-[24rem] bg-[#333333] shadow-lg rounded-lg pointer-events-auto py-3 px-4 text-white flex gap-2 ring-1 ring-black ring-opacity-5`}
+        >
+          <div>
+            <img src={IconChangesSaved} alt="changes-saved-icon" />
+          </div>
+          <p>Your changes have been successfully saved!</p>
+        </div>
+      )),
     onSettled: () => queryClient.invalidateQueries({ queryKey: ["auth"] }),
   });
 
@@ -84,6 +100,7 @@ const Profile = () => {
   };
   return (
     <section className="container md:px-6">
+      <Toaster position="bottom-center" reverseOrder={false} />
       <div className="lg:grid lg:grid-wrapper gap-6">
         <div className="box-phone hidden lg:flex lg:justify-center bg-[#ffffff] py-20 rounded-md">
           <PhoneContainer />
@@ -102,10 +119,26 @@ const Profile = () => {
               <div className="flex items-center gap-x-4 px-4">
                 <label
                   htmlFor="profile-picture"
-                  className="h-[12.0625rem] w-[12.0625rem] bg-[#efebff] text-[#633cff] rounded-md flex flex-col gap-y-3 items-center justify-center cursor-pointer"
+                  className="h-[12.0625rem] w-[12.0625rem] overflow-hidden group/item bg-[#efebff] text-[#633cff] rounded-md flex flex-col gap-y-3 items-center justify-center cursor-pointer"
                 >
-                  <img src={UploadIcon} alt="profile picture" />
-                  <span className="flex">+ Upload Image</span>
+                  {user.image ? (
+                    <div className="relative h-full ">
+                      <img
+                        src={user.image}
+                        alt="profile picture"
+                        className="rounded-md"
+                      />
+                      <div className="group/edit invisible group-hover/item:visible absolute top-[50%]  -translate-x-[50%] left-[50%] -translate-y-[50%] flex flex-col items-center justify-center">
+                        <img src={WhiteIconUpload} alt="profile picture" />
+                        <span className="flex text-white">Change Image</span>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <img src={UploadIcon} alt="profile picture" />
+                      <span className="flex">+ Upload Image</span>
+                    </>
+                  )}
                 </label>
                 <input
                   type="file"

@@ -39,7 +39,8 @@ export const getLinksHandler = catchErrors(async (req, res) => {
 export const createProfileHandler = catchErrors(async (req, res) => {
   const { firstName, lastName, image } = createProfileSchema.parse(req.body);
   let imageUrl = null;
-  if (image) {
+  const imageStringCheck = "https://res.cloudinary.com/mrvicthor/image/upload/";
+  if (image && image.includes(imageStringCheck) === false) {
     const base64Data = image.split(",")[1];
     const result = await cloudinary.uploader.upload(
       `data:image/png;base64,${base64Data}`,
@@ -49,6 +50,8 @@ export const createProfileHandler = catchErrors(async (req, res) => {
     );
 
     imageUrl = result.secure_url;
+  } else {
+    imageUrl = image;
   }
   const userId = req.userId;
 
