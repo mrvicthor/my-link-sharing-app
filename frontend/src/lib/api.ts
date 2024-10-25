@@ -20,9 +20,9 @@ type LinkData = {
 };
 
 type ProfileData = {
-  firstName: string;
-  lastName: string;
-  image: string;
+  "First name": string;
+  "Last name": string;
+  imageUrl: string;
 };
 
 interface UpdateLink extends LinkData {

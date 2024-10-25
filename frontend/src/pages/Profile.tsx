@@ -6,19 +6,18 @@ import { FieldError, useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PhoneContainer from "@/components/PhoneContainer";
-import UploadIcon from "@/assets/images/icon-upload-image.svg";
 import useAuth from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import IconChangesSaved from "@/assets/images/icon-changes-saved.svg";
-import WhiteIconUpload from "@/assets/images/icon-upload-white-image.svg";
 import ProfileInput from "@/components/ProfileInput";
+import ImageInput from "@/components/ImageInput";
 const MAX_FILE_SIZE = 1000000;
 const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png"];
 
 const profileSchema = z.object({
   "First name": z.string().min(1, { message: "Can't be empty" }),
   "Last name": z.string().min(1, { message: "Can't be empty" }),
-  image: z.string(),
+  imageUrl: z.string(),
   Email: z.string().email({ message: "Invalid email" }),
 });
 
@@ -40,7 +39,7 @@ const Profile = () => {
       Email: user.email,
       "First name": user.firstName,
       "Last name": user.lastName,
-      image: user.image,
+      imageUrl: user.image,
     },
   });
 
@@ -63,7 +62,7 @@ const Profile = () => {
       reader.onloadend = () => {
         const base64String = reader.result as string;
         setImagePreview(base64String);
-        setValue("image", base64String);
+        setValue("imageUrl", base64String);
       };
       reader.readAsDataURL(file);
       // setImagePreview(URL.createObjectURL(file));
@@ -112,56 +111,14 @@ const Profile = () => {
             <p className="text-[#737373] text-sm mt-4 opacity-80 px-6 w-full">
               Add your details to add a personal touch to your profile
             </p>
-            <div className="bg-[#fafafa] mt-6 px-4 py-4 mx-6 rounded-md h-[14.56rem] flex gap-x-4 items-center justify-between text-[#737373]">
-              <p>Profile picture</p>
-              <div className="flex items-center gap-x-4 px-4">
-                <label
-                  htmlFor="profile-picture"
-                  className="h-[12.0625rem] w-[12.0625rem] overflow-hidden group/item bg-[#efebff] text-[#633cff] rounded-md flex flex-col gap-y-3 items-center justify-center cursor-pointer"
-                >
-                  {user.image ? (
-                    <div className="relative h-full ">
-                      <img
-                        src={user.image}
-                        alt="profile picture"
-                        className="rounded-md"
-                      />
-                      <div className="group/edit invisible group-hover/item:visible absolute top-[50%]  -translate-x-[50%] left-[50%] -translate-y-[50%] flex flex-col items-center justify-center">
-                        <img src={WhiteIconUpload} alt="profile picture" />
-                        <span className="flex text-white">Change Image</span>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <img src={UploadIcon} alt="profile picture" />
-                      <span className="flex">+ Upload Image</span>
-                    </>
-                  )}
-                </label>
-                <input
-                  type="file"
-                  id="profile-picture"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  hidden
-                />
-                <p>
-                  Image must be below 1024x1024px. <br />
-                  Use PNG or JPG format.
-                </p>
-                {imageError && <span>{imageError}</span>}
-                {imagePreview && (
-                  <img
-                    src={imagePreview}
-                    alt="Preview"
-                    className="mt-2 h-24 w-24 rounded-full"
-                  />
-                )}
-                {errors.image && (
-                  <p className="text-[#ff3939]">Image upload failed</p>
-                )}
-              </div>
-            </div>
+
+            <ImageInput
+              handleImageUpload={handleImageUpload}
+              imageUrl={user.image}
+              imageError={imageError}
+              imagePreview={imagePreview}
+              error={errors.imageUrl as FieldError}
+            />
             <div className="mx-6 bg-[#fafafa] px-4 mt-6 rounded-md py-4 text-[#737373]">
               <ProfileInput
                 register={register}
