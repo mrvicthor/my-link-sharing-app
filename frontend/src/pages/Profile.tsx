@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { createProfile } from "@/lib/api";
 import toast, { Toaster } from "react-hot-toast";
-import { useForm } from "react-hook-form";
+import { FieldError, useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import PhoneContainer from "@/components/PhoneContainer";
@@ -11,17 +11,18 @@ import useAuth from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import IconChangesSaved from "@/assets/images/icon-changes-saved.svg";
 import WhiteIconUpload from "@/assets/images/icon-upload-white-image.svg";
+import ProfileInput from "@/components/ProfileInput";
 const MAX_FILE_SIZE = 1000000;
 const ALLOWED_FILE_TYPES = ["image/jpeg", "image/png"];
 
 const profileSchema = z.object({
-  firstName: z.string().min(1, { message: "Can't be empty" }),
-  lastName: z.string().min(1, { message: "Can't be empty" }),
+  "First name": z.string().min(1, { message: "Can't be empty" }),
+  "Last name": z.string().min(1, { message: "Can't be empty" }),
   image: z.string(),
-  email: z.string().email({ message: "Invalid email" }),
+  Email: z.string().email({ message: "Invalid email" }),
 });
 
-type ProfileFormData = z.infer<typeof profileSchema>;
+export type ProfileFormData = z.infer<typeof profileSchema>;
 
 const Profile = () => {
   const queryClient = useQueryClient();
@@ -36,9 +37,9 @@ const Profile = () => {
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
+      Email: user.email,
+      "First name": user.firstName,
+      "Last name": user.lastName,
       image: user.image,
     },
   });
@@ -58,12 +59,9 @@ const Profile = () => {
         return;
       }
 
-      console.log(file);
-
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
-        console.log("result", reader);
         setImagePreview(base64String);
         setValue("image", base64String);
       };
@@ -165,94 +163,27 @@ const Profile = () => {
               </div>
             </div>
             <div className="mx-6 bg-[#fafafa] px-4 mt-6 rounded-md py-4 text-[#737373]">
-              <div className="flex items-center justify-between gap-x-4">
-                <label
-                  htmlFor="firstName"
-                  className={`capitalize font-light text-sm basis-1/3 ${
-                    errors.firstName && "text-[#ff3939]"
-                  }`}
-                >
-                  First name<sup>*</sup>
-                </label>
-                <div
-                  className={`${
-                    errors.firstName
-                      ? "border-[#ff3939] border"
-                      : "input-wrapper"
-                  } basis-2/3 register-form-input flex`}
-                >
-                  <input
-                    type="text"
-                    id="firstName"
-                    {...register("firstName")}
-                    placeholder="e.g. alex@email.com "
-                    aria-invalid={errors.firstName ? "true" : "false"}
-                  />
-                  {errors.firstName && (
-                    <p role="alert" className="text-[#ff3939] flex-item-3">
-                      {errors.firstName.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-              <div className="mt-1 flex items-center justify-between gap-x-4">
-                <label
-                  htmlFor="lastName"
-                  className={`capitalize font-light text-sm basis-1/3 ${
-                    errors.lastName && "text-[#ff3939]"
-                  }`}
-                >
-                  Last name<sup>*</sup>
-                </label>
-                <div
-                  className={`${
-                    errors.lastName
-                      ? "border-[#ff3939] border"
-                      : "input-wrapper"
-                  } basis-2/3 register-form-input flex`}
-                >
-                  <input
-                    type="text"
-                    id="lastName"
-                    {...register("lastName")}
-                    placeholder="e.g. alex@email.com "
-                    aria-invalid={errors.lastName ? "true" : "false"}
-                  />
-                  {errors.lastName && (
-                    <p role="alert" className="text-[#ff3939] flex-item-3">
-                      {errors.lastName.message}
-                    </p>
-                  )}
-                </div>
-              </div>
-              <div className="mt-1 flex items-center justify-between gap-x-4">
-                <label
-                  htmlFor="email"
-                  className={`capitalize font-light text-sm basis-1/3 ${
-                    errors.email && "text-[#ff3939]"
-                  }`}
-                >
-                  Email address
-                </label>
-                <div
-                  className={`${
-                    errors.email ? "border-[#ff3939] border" : "input-wrapper"
-                  } basis-2/3 register-form-input flex`}
-                >
-                  <input
-                    type="email"
-                    id="email"
-                    {...register("email")}
-                    placeholder="e.g. alex@email.com "
-                    aria-invalid={errors.email ? "true" : "false"}
-                  />
-                  {errors.email && (
-                    <p role="alert" className="text-[#ff3939] flex-item-3">
-                      {errors.email.message}
-                    </p>
-                  )}
-                </div>
-              </div>
+              <ProfileInput
+                register={register}
+                fieldName="firstName"
+                error={errors["First name"] as FieldError}
+                label="First name"
+                type="text"
+              />
+              <ProfileInput
+                register={register}
+                fieldName="lastName"
+                error={errors["Last name"] as FieldError}
+                label="Last name"
+                type="text"
+              />
+              <ProfileInput
+                register={register}
+                fieldName="email"
+                error={errors.Email as FieldError}
+                label="Email"
+                type="email"
+              />
             </div>
             <hr className="mt-4" />
             <div className="flex justify-end mt-4 px-6">
