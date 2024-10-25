@@ -36,10 +36,10 @@ const Profile = () => {
   } = useForm<ProfileFormData>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      Email: user.email,
-      "First name": user.firstName,
-      "Last name": user.lastName,
-      imageUrl: user.image,
+      Email: user?.email,
+      "First name": user?.firstName,
+      "Last name": user?.lastName,
+      imageUrl: user?.image,
     },
   });
 
@@ -92,7 +92,8 @@ const Profile = () => {
   });
 
   const onSubmit = async (data: ProfileFormData) => {
-    const { email, ...rest } = data;
+    const { Email, ...rest } = data;
+    console.log(Email);
     updateProfile(rest);
   };
   return (
@@ -114,7 +115,7 @@ const Profile = () => {
 
             <ImageInput
               handleImageUpload={handleImageUpload}
-              imageUrl={user.image}
+              imageUrl={user?.image as string}
               imageError={imageError}
               imagePreview={imagePreview}
               error={errors.imageUrl as FieldError}

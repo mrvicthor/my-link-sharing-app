@@ -29,6 +29,26 @@ interface UpdateLink extends LinkData {
   id: string;
 }
 
+interface Link {
+  _id: string;
+  title: string;
+  url: string;
+}
+
+type User = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  image: string;
+  links: Link[];
+  profileCompleted: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  verified: boolean;
+  _id: string;
+  __v: number;
+};
+
 export const login = async (data: LoginData) => API.post("/auth/login", data);
 export const createUser = async (data: RegisterData) =>
   API.post("/auth/register", data);
@@ -39,7 +59,7 @@ export const sendPasswordResetEmail = async (email: string) =>
   API.post("/auth/password/forgot", { email });
 export const resetPassword = async (data: ResetPasswordData) =>
   API.post("/auth/password/reset", data);
-export const getUser = async () => API.get("/user");
+export const getUser = async () => API.get<User, User>("/user");
 export const createLink = async (data: LinkData[]) =>
   API.post("/user/create-link", data);
 export const getLinks = async () => API.get("/user/links");

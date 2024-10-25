@@ -1,25 +1,14 @@
 import PhoneMockup from "@/assets/images/illustration-phone-mockup.svg";
 import { useLocation } from "react-router-dom";
 import LinkItem from "./LinkItem";
-import useLinks from "@/hooks/useLinks";
 import useAuth from "@/hooks/useAuth";
-
-type ILink = {
-  title: string;
-  url: string;
-  _id: string;
-  _v: number;
-  createdAt: Date;
-  updatedAt: Date;
-  owner: string;
-};
 
 const PhoneContainer = () => {
   const { user } = useAuth();
   const { pathname } = useLocation();
-  const fullName = `${user.firstName} ${user.lastName}`;
+  const fullName = `${user?.firstName} ${user?.lastName}`;
 
-  return user.links && user.image === null && pathname !== "/profile" ? (
+  return user?.links && user?.image === null && pathname !== "/profile" ? (
     <img src={PhoneMockup} alt="phone mockup" />
   ) : (
     <div className="phone-container relative">
@@ -41,7 +30,7 @@ const PhoneContainer = () => {
         />
       </svg>
       <ul className="phone-content absolute  lg:top-[13.5rem]  left-[50%] -translate-x-[50%] w-[11.8125rem] space-y-4">
-        {user.links?.map((link: ILink) => (
+        {user?.links?.map((link) => (
           <LinkItem
             key={link._id}
             title={link.title}
@@ -51,7 +40,7 @@ const PhoneContainer = () => {
         ))}
         {[...Array(4)].map(
           (_, index) =>
-            user.links &&
+            user?.links &&
             pathname !== "/profile" &&
             user.links.length < index + 2 && (
               <li
@@ -75,14 +64,14 @@ const PhoneContainer = () => {
       ) : (
         <div className="absolute bg-[#d9d9d9] opacity-50 h-20 w-20 top-12 rounded-full left-[50%] -translate-x-[50%]" />
       )}
-      {user.firstName && user.lastName && fullName ? (
+      {user?.firstName && user.lastName && fullName ? (
         <p className="absolute top-40 left-[50%] -translate-x-[50%] font-medium capitalize">
           {fullName}
         </p>
       ) : (
         <div className="absolute bg-[#d9d9d9] h-3 w-[7.8125rem] opacity-50 top-40 rounded-full left-[50%] -translate-x-[50%]" />
       )}
-      {user.email ? (
+      {user?.email ? (
         <p className="absolute top-[11.5rem] rounded-full left-[50%] -translate-x-[50%] text-sm text-[#737373] opacity-50">
           {user.email}
         </p>
