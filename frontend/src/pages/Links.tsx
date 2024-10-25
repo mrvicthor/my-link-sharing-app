@@ -1,7 +1,5 @@
 import { Toaster } from "react-hot-toast";
-
 import PhoneContainer from "@/components/PhoneContainer";
-
 import CreateForm from "@/components/CreateForm";
 
 const Links = () => {
@@ -12,7 +10,6 @@ const Links = () => {
         <div className="box-phone hidden lg:flex lg:justify-center bg-[#ffffff] py-20 rounded-md">
           <PhoneContainer />
         </div>
-
         <CreateForm />
       </div>
     </section>
