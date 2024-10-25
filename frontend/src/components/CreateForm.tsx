@@ -60,7 +60,7 @@ const CreateForm = () => {
       form.reset();
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["links"] });
+      queryClient.invalidateQueries({ queryKey: ["auth"] });
     },
   });
 

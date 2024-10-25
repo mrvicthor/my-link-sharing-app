@@ -37,11 +37,15 @@ export const getLinksHandler = catchErrors(async (req, res) => {
 });
 
 export const createProfileHandler = catchErrors(async (req, res) => {
-  const { firstName, lastName, image } = createProfileSchema.parse(req.body);
-  let imageUrl = null;
+  const {
+    "First name": firstName,
+    "Last name": lastName,
+    imageUrl,
+  } = createProfileSchema.parse(req.body);
+  let image = null;
   const imageStringCheck = "https://res.cloudinary.com/mrvicthor/image/upload/";
-  if (image && image.includes(imageStringCheck) === false) {
-    const base64Data = image.split(",")[1];
+  if (imageUrl && imageUrl.includes(imageStringCheck) === false) {
+    const base64Data = imageUrl.split(",")[1];
     const result = await cloudinary.uploader.upload(
       `data:image/png;base64,${base64Data}`,
       {
@@ -49,9 +53,9 @@ export const createProfileHandler = catchErrors(async (req, res) => {
       }
     );
 
-    imageUrl = result.secure_url;
+    image = result.secure_url;
   } else {
-    imageUrl = image;
+    image = imageUrl;
   }
   const userId = req.userId;
 
@@ -59,7 +63,7 @@ export const createProfileHandler = catchErrors(async (req, res) => {
     firstName,
     lastName,
     userId,
-    image: imageUrl as string,
+    image: image as string,
   });
   return res.status(OK).json({ message: "Profile created successfully" });
 });
@@ -77,7 +81,7 @@ export const deleteLinkHandler = catchErrors(async (req, res) => {
     },
     {
       $pull: {
-        links: linkId,
+        links: { _id: linkId },
       },
     }
   );

@@ -29,7 +29,7 @@ export const resetPasswordSchema = z.object({
 });
 
 export const createProfileSchema = z.object({
-  firstName: z.string().min(3),
-  lastName: z.string().min(3),
-  image: z.string(),
+  "First name": z.string().min(3),
+  "Last name": z.string().min(3),
+  imageUrl: z.string(),
 });

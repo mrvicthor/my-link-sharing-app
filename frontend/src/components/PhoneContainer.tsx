@@ -15,12 +15,11 @@ type ILink = {
 };
 
 const PhoneContainer = () => {
-  const { links } = useLinks();
   const { user } = useAuth();
   const { pathname } = useLocation();
   const fullName = `${user.firstName} ${user.lastName}`;
 
-  return links && user.image === null && pathname !== "/profile" ? (
+  return user.links && user.image === null && pathname !== "/profile" ? (
     <img src={PhoneMockup} alt="phone mockup" />
   ) : (
     <div className="phone-container relative">
@@ -42,7 +41,7 @@ const PhoneContainer = () => {
         />
       </svg>
       <ul className="phone-content absolute  lg:top-[13.5rem]  left-[50%] -translate-x-[50%] w-[11.8125rem] space-y-4">
-        {links?.map((link: ILink) => (
+        {user.links?.map((link: ILink) => (
           <LinkItem
             key={link._id}
             title={link.title}
@@ -52,9 +51,9 @@ const PhoneContainer = () => {
         ))}
         {[...Array(4)].map(
           (_, index) =>
-            links &&
+            user.links &&
             pathname !== "/profile" &&
-            links.length < index + 2 && (
+            user.links.length < index + 2 && (
               <li
                 key={index}
                 className="bg-[#d9d9d9] opacity-50 h-8 rounded-md"
@@ -76,7 +75,7 @@ const PhoneContainer = () => {
       ) : (
         <div className="absolute bg-[#d9d9d9] opacity-50 h-20 w-20 top-12 rounded-full left-[50%] -translate-x-[50%]" />
       )}
-      {fullName ? (
+      {user.firstName && user.lastName && fullName ? (
         <p className="absolute top-40 left-[50%] -translate-x-[50%] font-medium capitalize">
           {fullName}
         </p>

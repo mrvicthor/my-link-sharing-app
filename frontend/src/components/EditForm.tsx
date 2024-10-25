@@ -48,7 +48,7 @@ const EditForm = ({ id, url, title }: EditProps) => {
       toast.success("Link deleted successfully");
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["links"] });
+      queryClient.invalidateQueries({ queryKey: ["auth"] });
     },
   });
 
@@ -58,7 +58,7 @@ const EditForm = ({ id, url, title }: EditProps) => {
       toast.success("Link updated successfully");
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["links"] });
+      queryClient.invalidateQueries({ queryKey: ["auth"] });
     },
   });
 

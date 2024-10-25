@@ -135,4 +135,8 @@
     grid-template-columns: 35rem 1fr;
     grid-template-rows: 80vh;
   }
+
+  .card-wrapper {
+    box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+  }
 }
