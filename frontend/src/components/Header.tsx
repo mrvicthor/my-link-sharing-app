@@ -6,8 +6,10 @@ import { Button } from "./ui/button";
 import { useMutation } from "@tanstack/react-query";
 import { logout } from "@/lib/api";
 import queryClient from "@/config/queryClient";
+import useAuth from "@/hooks/useAuth";
 
 const Header = () => {
+  const { user } = useAuth();
   const navigate = useNavigate();
   const { mutate: signOut } = useMutation({
     mutationFn: logout,
@@ -64,7 +66,7 @@ const Header = () => {
         </ul>
         <div className="flex">
           <NavLink
-            to={"/preview"}
+            to={`/link/${user?._id}`}
             className={({ isActive }) =>
               isActive
                 ? "bg-[#EFEBFF] text-[#633CFF] flex md:hidden rounded-md px-4 py-2"
@@ -77,7 +79,7 @@ const Header = () => {
             />
           </NavLink>
           <NavLink
-            to={"/preview"}
+            to={`/link/${user?._id}`}
             className={({ isActive }) =>
               isActive
                 ? "bg-[#EFEBFF] text-[#633CFF] rounded-md px-4 py-2 hidden md:flex"

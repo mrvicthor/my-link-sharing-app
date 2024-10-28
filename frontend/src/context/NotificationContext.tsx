@@ -15,7 +15,9 @@ export const NotificationProvider = ({
   children: React.ReactNode;
 }) => {
   const [notification, setNotification] = useState<boolean>(false);
+
   useEffect(() => {
+    navigator.clipboard.writeText(window.location.href);
     const interval = setTimeout(() => setNotification(false), 3000);
     return () => clearTimeout(interval);
   }, [notification]);

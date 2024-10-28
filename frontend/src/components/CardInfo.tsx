@@ -10,7 +10,7 @@ const CardInfo = () => {
       <div className="h-[6.5rem] w-[6.5rem] overflow-hidden rounded-full border-4 border-[#633cff]">
         <img src={user?.image} alt="profile picture" />
       </div>
-      <h1 className="font-bold text-2xl">{fullName}</h1>
+      <h1 className="font-bold text-2xl capitalize">{fullName}</h1>
       <p className="text-[#737373]">{user?.email}</p>
       <ul className="space-y-4">
         {user?.links.map((link) => (
