@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-import { z } from "zod";
-import { BAD_REQUEST, CREATED, NOT_FOUND, OK } from "../constants/http";
+import { CREATED, NOT_FOUND, OK } from "../constants/http";
 import UserModel from "../models/user.model";
 import { createLink } from "../services/link.service";
 import appAssert from "../utils/appAssert";

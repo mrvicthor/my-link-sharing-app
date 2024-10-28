@@ -10,7 +10,7 @@ const Preview = () => {
   return (
     <NotificationProvider>
       <section className="relative">
-        <div className="bg-[#633cff] md:px-6 md:pt-6 h-[22.3125rem] rounded-b-3xl">
+        <div className="md:bg-[#633cff] px-6 pt-6 h-[22.3125rem] md:rounded-b-3xl">
           {user ? <PreviewHeader /> : null}
         </div>
         <CardInfo />

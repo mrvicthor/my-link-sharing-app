@@ -13,18 +13,19 @@ const CardLink = ({ url, title }: Props) => {
   return (
     <li
       style={{ backgroundColor: color }}
-      className={`p-2 rounded-md flex items-center cursor-pointer w-[14.8125rem]`}
+      className={`p-2 rounded-md  cursor-pointer w-[14.8125rem]`}
     >
-      <LinkIcon color="white" pathString={icon} />
-      <span className="text-white block text-xs">{title}</span>
-
       <a
         href={`${url}`}
         target="_blank"
         rel="noopener"
-        className="text-white ml-auto"
+        className="text-white flex items-center"
       >
-        <img src={ArrowIcon} alt="arrow icon" />
+        <LinkIcon color="white" pathString={icon} />
+        <span className="text-white block text-xs">{title}</span>
+        <div className="ml-auto">
+          <img src={ArrowIcon} alt="arrow icon" />
+        </div>
       </a>
     </li>
   );
