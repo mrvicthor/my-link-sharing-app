@@ -21,6 +21,7 @@ export interface IUser extends mongoose.Document {
   createdAt: Date;
   updatedAt: Date;
   links: ILink[];
+  __v?: number;
   comparePassword: (password: string) => Promise<boolean>;
   omitPassword: () => Pick<
     IUser,

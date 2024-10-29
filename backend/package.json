@@ -34,7 +34,6 @@
     "express": "^4.21.0",
     "fill-range": "^7.1.1",
     "fs.realpath": "^1.0.0",
-    "fsevents": "^2.3.3",
     "function-bind": "^1.1.2",
     "glob": "^7.2.3",
     "glob-parent": "^5.1.2",
@@ -90,5 +89,8 @@
     "@types/uuid": "^10.0.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.6.2"
+  },
+  "optionalDependencies": {
+"fsevents": "^2.3.3"
   }
 }

@@ -1,11 +1,5 @@
 import resend from "../config/resend";
-import nodemailer from "nodemailer";
-import {
-  EMAIL_SENDER,
-  GMAIL_ACCT,
-  GMAIL_PASS,
-  NODE_ENV,
-} from "../constants/env";
+import { EMAIL_SENDER, NODE_ENV } from "../constants/env";
 
 type MailProps = {
   to: string;
@@ -15,8 +9,8 @@ type MailProps = {
 };
 export const sendMail = async ({ to, subject, text, html }: MailProps) =>
   await resend.emails.send({
-    from: "onboarding@resend.dev",
-    to: "delivered@resend.dev",
+    from: getFromEmail(),
+    to: getToEmail(to),
     subject,
     text,
     html,
@@ -27,13 +21,3 @@ export const getFromEmail = () =>
 
 export const getToEmail = (to: string) =>
   NODE_ENV === "development" ? "delivered@resend.dev" : to;
-
-// export const transporter = nodemailer.createTransport({
-//   host: "smtp.gmail.com",
-//   port: 587,
-//   secure: false,
-//   auth: {
-//     user: GMAIL_ACCT,
-//     pass: GMAIL_PASS,
-//   },
-// });
