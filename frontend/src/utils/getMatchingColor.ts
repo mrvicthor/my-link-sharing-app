@@ -3,7 +3,7 @@ const platformColors: Record<string, string> = {
   "Frontend Mentor": "#ffffff",
   Twitter: "#8CDCFC",
   LinkedIn: "#0680FA",
-  YouTube: "#FF3939",
+  Youtube: "#FF3939",
   Facebook: "#143C9C",
   Twitch: "#FB04FB",
   "Dev.to": "#333333",

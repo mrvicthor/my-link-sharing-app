@@ -1,5 +1,4 @@
 import LinkIcon from "./LinkIcon";
-import ArrowIcon from "@/assets/images/icon-arrow-right.svg";
 import { getMatchingColor } from "@/utils/getMatchingColor";
 import { getIcon } from "@/utils/getIcon";
 import {
@@ -27,18 +26,30 @@ const LinkItem = ({ id, url, title }: Props) => {
       <DialogTrigger asChild>
         <li
           style={{ backgroundColor: color }}
-          className={`p-2 rounded-md flex items-center cursor-pointer`}
+          className={`p-2 rounded-md flex items-center cursor-pointer ${
+            title === "Frontend Mentor" ? "border text-black" : "text-white"
+          }`}
         >
-          <LinkIcon color="white" pathString={icon} />
-          <span className="text-white block text-xs">{title}</span>
+          <LinkIcon
+            color={title === "Frontend Mentor" ? "black" : "white"}
+            pathString={icon}
+          />
+          <span className=" block text-xs">
+            {title === "Youtube" ? "YouTube" : title}
+          </span>
 
           <a
             href={`${url}`}
             target="_blank"
             rel="noopener"
-            className="text-white ml-auto"
+            className={`${
+              title === "Frontend Mentor" ? "text-black" : "text-white"
+            } ml-auto`}
           >
-            <img src={ArrowIcon} alt="arrow icon" />
+            <LinkIcon
+              color={title === "Frontend Mentor" ? "black" : "white"}
+              pathString="M2.667 7.333v1.334h8L7 12.333l.947.947L13.227 8l-5.28-5.28L7 3.667l3.667 3.666h-8Z"
+            />
           </a>
         </li>
       </DialogTrigger>
