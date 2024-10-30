@@ -19,3 +19,4 @@ export const EMAIL_SENDER = getEnv("EMAIL_SENDER");
 export const CLOUDINARY_NAME = getEnv("CLOUDINARY_NAME");
 export const CLOUDINARY_API_KEY = getEnv("CLOUDINARY_API_KEY");
 export const CLOUDINARY_API_SECRET = getEnv("CLOUDINARY_API_SECRET");
+export const DEVELOPMENT_ORIGIN = getEnv("DEVELOPMENT_ORIGIN");
