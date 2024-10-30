@@ -6,7 +6,7 @@ const secure = process.env.NODE_ENV !== "development";
 const defaultCookieOptions: CookieOptions = {
   httpOnly: true,
   secure,
-  sameSite: "strict",
+  sameSite: "none",
 };
 
 export const getAccessTokenCookieOptions = (): CookieOptions => ({
