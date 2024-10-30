@@ -74,28 +74,24 @@ function App() {
   // ]);
   return (
     <Routes>
-      {" "}
       <Route path="/" element={<AppContainer />} errorElement={<ErrorPage />}>
-        {" "}
         <Route
           element={
             <Layout>
-              {" "}
-              <Outlet />{" "}
+              <Outlet />
             </Layout>
           }
         >
-          {" "}
-          <Route index element={<Links />} />{" "}
-          <Route path="profile" element={<Profile />} />{" "}
-        </Route>{" "}
-        <Route path="preview" element={<Preview />} />{" "}
-      </Route>{" "}
-      <Route path="login" element={<Login />} />{" "}
+          <Route index element={<Links />} />
+          <Route path="profile" element={<Profile />} />
+        </Route>
+      </Route>
+      <Route path="login" element={<Login />} />
       <Route path="signup" element={<Signup />} />{" "}
-      <Route path="email/verify/:code" element={<VerifyEmail />} />{" "}
-      <Route path="password/forgot" element={<ForgotPassword />} />{" "}
-      <Route path="password/reset" element={<ResetPassword />} />{" "}
+      <Route path="email/verify/:code" element={<VerifyEmail />} />
+      <Route path="password/forgot" element={<ForgotPassword />} />
+      <Route path="password/reset" element={<ResetPassword />} />
+      <Route path="link/:id" element={<Preview />} />
     </Routes>
   );
 }
