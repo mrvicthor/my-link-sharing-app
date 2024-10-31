@@ -76,3 +76,5 @@ export const updateLink = async (data: UpdateLink) => {
   const { id, ...rest } = data;
   API.put(`/user/links/${id}`, rest);
 };
+
+export const getPreview = async (id: string) => API.get(`/user/preview/${id}`);
