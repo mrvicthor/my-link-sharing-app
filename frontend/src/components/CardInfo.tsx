@@ -1,9 +1,25 @@
-import useAuth from "@/hooks/useAuth";
 import CardLink from "./CardLink";
 
-const CardInfo = () => {
-  const { user } = useAuth();
+type Link = {
+  _id: string;
+  title: string;
+  url: string;
+};
 
+type User = {
+  _id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  image: string;
+  links: Link[];
+  __v?: number;
+};
+
+type Props = {
+  user: User | undefined;
+};
+const CardInfo = ({ user }: Props) => {
   const fullName = `${user?.firstName} ${user?.lastName}`;
   return (
     <section className="p-8 md:bg-white rounded-lg w-[21.8125rem] absolute top-[8rem] md:top-[14rem] left-[50%] -translate-x-[50%] z-40 flex flex-col gap-y-4 items-center md:card-wrapper">

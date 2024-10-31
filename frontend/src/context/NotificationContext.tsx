@@ -17,9 +17,11 @@ export const NotificationProvider = ({
   const [notification, setNotification] = useState<boolean>(false);
 
   useEffect(() => {
-    navigator.clipboard.writeText(window.location.href);
-    const interval = setTimeout(() => setNotification(false), 3000);
-    return () => clearTimeout(interval);
+    navigator.clipboard
+      .writeText(window.location.href)
+      .catch((err) => console.log("Failed to copy URL: ", err));
+    const timeout = setTimeout(() => setNotification(false), 3000);
+    return () => clearTimeout(timeout);
   }, [notification]);
 
   return (
