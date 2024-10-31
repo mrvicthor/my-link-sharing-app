@@ -14,6 +14,7 @@ const Header = () => {
   const { mutate: signOut } = useMutation({
     mutationFn: logout,
     onSettled: () => {
+      localStorage.removeItem("user");
       queryClient.clear();
       navigate("/login", { replace: true });
     },
@@ -88,7 +89,13 @@ const Header = () => {
           >
             Preview
           </NavLink>
-          <Button onClick={() => signOut()} variant={"link"}>
+          <Button
+            onClick={() => {
+              signOut();
+              console.log("logout", user);
+            }}
+            variant={"link"}
+          >
             Logout
           </Button>
         </div>

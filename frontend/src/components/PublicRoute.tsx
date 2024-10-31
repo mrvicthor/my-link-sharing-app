@@ -1,12 +1,8 @@
 import { Navigate } from "react-router-dom";
 import React from "react";
-import useAuth from "@/hooks/useAuth";
-import Loader from "./Loader";
 
 const PublicRoute = ({ children }: { children: React.ReactNode }) => {
-  const { user, isLoading } = useAuth();
-
-  if (isLoading) return <Loader />;
+  const user = JSON.parse(localStorage.getItem("user") as string);
   if (user) return <Navigate to="/" replace />;
   return <>{children}</>;
 };
