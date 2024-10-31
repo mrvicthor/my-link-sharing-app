@@ -1,16 +1,16 @@
-import { getLinks } from "@/lib/api";
+import { getPreview } from "@/lib/api";
 import { useQuery } from "@tanstack/react-query";
 
-export const LINKS = "links";
+export const PREVIEW = "preview";
 
-const useLinks = (opts = {}) => {
-  const { data: links, ...rest } = useQuery({
-    queryKey: [LINKS],
-    queryFn: getLinks,
+const useDetails = (id: string, opts = {}) => {
+  const { data: user, ...rest } = useQuery({
+    queryKey: [PREVIEW, id],
+    queryFn: () => getPreview(id),
     staleTime: Infinity,
     ...opts,
   });
-  return { links, ...rest };
+  return { user, ...rest };
 };
 
-export default useLinks;
+export default useDetails;
