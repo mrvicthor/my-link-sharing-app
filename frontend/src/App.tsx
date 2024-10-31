@@ -1,6 +1,7 @@
 // import reactLogo from './assets/react.svg'
 // import viteLogo from '/vite.svg'
 import { Outlet, Routes, Route, useNavigate } from "react-router-dom";
+import PublicRoute from "./components/PublicRoute";
 import ErrorPage from "./pages/ErrorPage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -17,64 +18,11 @@ import { setNavigate } from "./lib/navigation";
 function App() {
   const navigate = useNavigate();
   setNavigate(navigate);
-  // const router = createBrowserRouter([
-  //   {
-  //     path: "/",
-  //     element: <AppContainer />,
-  //     errorElement: <ErrorPage />,
-  //     children: [
-  //       {
-  //         element: (
-  //           <Layout>
-  //             <Outlet />
-  //           </Layout>
-  //         ),
-  //         children: [
-  //           {
-  //             index: true,
-  //             element: <Links />,
-  //           },
-  //           {
-  //             path: "profile",
-  //             element: <Profile />,
-  //           },
-  //         ],
-  //       },
-  //     ],
-  //   },
-  //   {
-  //     path: "login",
-  //     element: <Login />,
-  //     errorElement: <ErrorPage />,
-  //   },
-  //   {
-  //     path: "signup",
-  //     element: <Signup />,
-  //     errorElement: <ErrorPage />,
-  //   },
-  //   {
-  //     path: "email/verify/:code",
-  //     element: <VerifyEmail />,
-  //     errorElement: <ErrorPage />,
-  //   },
-  //   {
-  //     path: "password/forgot",
-  //     element: <ForgotPassword />,
-  //     errorElement: <ErrorPage />,
-  //   },
-  //   {
-  //     path: "password/reset",
-  //     element: <ResetPassword />,
-  //     errorElement: <ErrorPage />,
-  //   },
-  //   {
-  //     path: "link/:id",
-  //     element: <Preview />,
-  //   },
-  // ]);
+
   return (
     <Routes>
-      <Route path="/" element={<AppContainer />} errorElement={<ErrorPage />}>
+      {/* Protected App Route */}
+      <Route path="/" element={<AppContainer />}>
         <Route
           element={
             <Layout>
@@ -86,12 +34,44 @@ function App() {
           <Route path="profile" element={<Profile />} />
         </Route>
       </Route>
-      <Route path="login" element={<Login />} />
-      <Route path="signup" element={<Signup />} />{" "}
+      {/* Public Auth Routes */}
+      <Route
+        path="login"
+        element={
+          <PublicRoute>
+            <Login />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="signup"
+        element={
+          <PublicRoute>
+            <Signup />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="password/forgot"
+        element={
+          <PublicRoute>
+            <ForgotPassword />
+          </PublicRoute>
+        }
+      />
+      <Route
+        path="password/reset"
+        element={
+          <PublicRoute>
+            <ResetPassword />
+          </PublicRoute>
+        }
+      />
+      {/* Public Verified Auth Routes */}
       <Route path="email/verify/:code" element={<VerifyEmail />} />
-      <Route path="password/forgot" element={<ForgotPassword />} />
-      <Route path="password/reset" element={<ResetPassword />} />
+      {/* Public Preview Routes */}
       <Route path="link/:id" element={<Preview />} />
+      <Route path="*" errorElement={<ErrorPage />} />
     </Routes>
   );
 }

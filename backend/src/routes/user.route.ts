@@ -4,6 +4,7 @@ import {
   createProfileHandler,
   deleteLinkHandler,
   getLinksHandler,
+  getPreviewHandler,
   getUserHandler,
   updateLinkHandler,
 } from "../controllers/user.controller";
@@ -16,5 +17,6 @@ userRoutes.get("/links", getLinksHandler);
 userRoutes.post("/create-profile", createProfileHandler);
 userRoutes.delete("/links/:id", deleteLinkHandler);
 userRoutes.put("/links/:id", updateLinkHandler);
+userRoutes.get("/preview/:id", getPreviewHandler);
 
 export default userRoutes;

@@ -1,3 +1,4 @@
+import { useParams } from "react-router-dom";
 import CardInfo from "@/components/CardInfo";
 import PreviewHeader from "@/components/PreviewHeader";
 import Notification from "@/components/Notification";
@@ -5,6 +6,8 @@ import { NotificationProvider } from "@/context/NotificationContext";
 import useAuth from "@/hooks/useAuth";
 
 const Preview = () => {
+  const { id } = useParams();
+  console.log("victor", id);
   const { user } = useAuth();
 
   return (
