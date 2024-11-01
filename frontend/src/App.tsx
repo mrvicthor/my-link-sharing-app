@@ -21,19 +21,8 @@ function App() {
 
   return (
     <Routes>
-      {/* Protected App Route */}
-      <Route path="/" element={<AppContainer />}>
-        <Route
-          element={
-            <Layout>
-              <Outlet />
-            </Layout>
-          }
-        >
-          <Route index element={<Links />} />
-          <Route path="profile" element={<Profile />} />
-        </Route>
-      </Route>
+      {/* Public Preview Routes */}
+      <Route path="link/:id" element={<Preview />} />
       {/* Public Auth Routes */}
       <Route
         path="login"
@@ -69,8 +58,21 @@ function App() {
       />
       {/* Public Verified Auth Routes */}
       <Route path="email/verify/:code" element={<VerifyEmail />} />
-      {/* Public Preview Routes */}
-      <Route path="link/:id" element={<Preview />} />
+
+      {/* Protected App Route */}
+      <Route path="/" element={<AppContainer />}>
+        <Route
+          element={
+            <Layout>
+              <Outlet />
+            </Layout>
+          }
+        >
+          <Route index element={<Links />} />
+          <Route path="profile" element={<Profile />} />
+        </Route>
+      </Route>
+
       <Route path="*" errorElement={<ErrorPage />} />
     </Routes>
   );
