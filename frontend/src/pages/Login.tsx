@@ -21,6 +21,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 function Login() {
   const location = useLocation();
   const navigate = useNavigate();
+
   const redirectUrl = location.state?.redirectUrl || "/";
   const {
     handleSubmit,

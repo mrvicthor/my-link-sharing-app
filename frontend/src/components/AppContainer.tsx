@@ -1,17 +1,17 @@
 import useAuth from "@/hooks/useAuth";
+import { useAuthStatus } from "@/hooks/useAuthStatus";
 import Loader from "./Loader";
 import { Navigate, Outlet } from "react-router-dom";
 
 const AppContainer = () => {
-  const { user, isLoading } = useAuth();
-  localStorage.setItem("user", JSON.stringify(user));
+  const { isLoading } = useAuth();
+  const { user: authStatus } = useAuthStatus();
 
   return isLoading ? (
     <Loader />
-  ) : user ? (
+  ) : authStatus ? (
     <section>
-      {/* <UserInfo /> */}
-      <Outlet />{" "}
+      <Outlet />
     </section>
   ) : (
     <Navigate

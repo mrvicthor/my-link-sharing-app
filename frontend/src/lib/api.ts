@@ -79,3 +79,5 @@ export const updateLink = async (data: UpdateLink) => {
 
 export const getPreview = async (id: string) =>
   API.get<User, User>(`/user/preview/${id}`);
+
+export const checkAuth = async () => API.get("/auth/status");

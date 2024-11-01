@@ -117,6 +117,8 @@ export const loginUser = async ({ email, password, userAgent }: ILoginUser) => {
   const sessionInfo = {
     sessionId: session._id,
   };
+
+  console.log("login session", sessionInfo);
   // sign access token & refresh token
 
   const refreshToken = signToken(sessionInfo, refreshTokenSignOptions);

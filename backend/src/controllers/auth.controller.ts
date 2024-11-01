@@ -24,6 +24,7 @@ import {
 import { verifyToken } from "../utils/jwt";
 import SessionModel from "../models/session.model";
 import appAssert from "../utils/appAssert";
+import UserModel from "../models/user.model";
 
 export const registerHandler = catchErrors(async (req, res) => {
   const request = registerSchema.parse({
@@ -57,7 +58,7 @@ export const logoutHandler = catchErrors(async (req, res) => {
   if (payload) {
     await SessionModel.findByIdAndDelete(payload.sessionId);
   }
-  console.log("session", payload?.sessionId);
+  console.log("logout session", payload?.sessionId);
   return clearAuthCookies(res)
     .status(OK)
     .json({ message: "Logged out successfully" });
@@ -99,4 +100,14 @@ export const resetPasswordHandler = catchErrors(async (req, res) => {
   return clearAuthCookies(res)
     .status(OK)
     .json({ message: "Password reset successfully" });
+});
+
+export const authStatusHandler = catchErrors(async (req, res) => {
+  const accessToken = req.cookies.accessToken as string | undefined;
+  if (!accessToken) {
+    return res.status(UNAUTHORIZED).json({ message: "Unauthorized" });
+  }
+  const { payload } = verifyToken(accessToken || "");
+  const user = await UserModel.findById(payload?.userId);
+  return res.status(OK).json({ authorized: user ? true : false });
 });
