@@ -121,10 +121,3 @@ export const updateLinkHandler = catchErrors(async (req, res) => {
     .status(OK)
     .json({ message: "Link updated successfully", link: updatedLinkDoc });
 });
-
-export const getPreviewHandler = catchErrors(async (req, res) => {
-  const { id } = req.params;
-  const user = await UserModel.findById(id);
-  appAssert(user, NOT_FOUND, "User not found");
-  return res.status(OK).json(user.omitPassword());
-});

@@ -14,7 +14,6 @@ const Header = () => {
   const { mutate: signOut } = useMutation({
     mutationFn: logout,
     onSettled: () => {
-      localStorage.removeItem("user");
       queryClient.clear();
       navigate("/login", { replace: true });
     },

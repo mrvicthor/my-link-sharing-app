@@ -14,7 +14,7 @@ import {
   sendPasswordResetEmail,
   verifyEmail,
 } from "../services/auth.service";
-import { CREATED, OK, UNAUTHORIZED } from "../constants/http";
+import { CREATED, NOT_FOUND, OK, UNAUTHORIZED } from "../constants/http";
 import {
   setAuthCookies,
   clearAuthCookies,
@@ -110,4 +110,11 @@ export const authStatusHandler = catchErrors(async (req, res) => {
   const { payload } = verifyToken(accessToken || "");
   const user = await UserModel.findById(payload?.userId);
   return res.status(OK).json({ authorized: user ? true : false });
+});
+
+export const previewHandler = catchErrors(async (req, res) => {
+  const { id } = req.params;
+  const user = await UserModel.findById(id);
+  appAssert(user, NOT_FOUND, "User not found");
+  return res.status(OK).json(user.omitPassword());
 });
