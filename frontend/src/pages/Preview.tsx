@@ -5,9 +5,11 @@ import Notification from "@/components/Notification";
 import { NotificationProvider } from "@/context/NotificationContext";
 import useDetails from "@/hooks/useDetails";
 import Loader from "@/components/Loader";
+import { useAuthStatus } from "@/hooks/useAuthStatus";
 
 const Preview = () => {
   const { id } = useParams();
+  const { user: authorizedUser } = useAuthStatus();
   const { user, isLoading } = useDetails(id as string);
   if (isLoading) return <Loader />;
 
@@ -15,7 +17,7 @@ const Preview = () => {
     <NotificationProvider>
       <section className="relative">
         <div className="md:bg-[#633cff] px-6 pt-6 h-[22.3125rem] md:rounded-b-3xl">
-          {user ? <PreviewHeader /> : null}
+          {authorizedUser ? <PreviewHeader /> : null}
         </div>
         <CardInfo user={user} />
         <Notification message="The link has been copied to your clipboard!" />
