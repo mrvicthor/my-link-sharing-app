@@ -64,10 +64,8 @@ export const createLink = async (data: LinkData[]) =>
   API.post("/user/create-link", data);
 export const getLinks = async () => API.get("/user/links");
 // export const get
-export const createProfile = async (data: ProfileData) => {
-  console.log("data", data);
+export const createProfile = async (data: ProfileData) =>
   API.post("/user/create-profile", data);
-};
 
 export const deleteLink = async (data: string) =>
   API.delete(`/user/links/${data}`);

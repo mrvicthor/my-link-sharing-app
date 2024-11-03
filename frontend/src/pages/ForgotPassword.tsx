@@ -33,7 +33,6 @@ const ForgotPassword = () => {
   } = useMutation({
     mutationFn: sendPasswordResetEmail,
   });
-  console.log("error", error, isSuccess, isError);
 
   const onSubmit = (data: PasswordResetFormData) =>
     sendPasswordReset(data.email);

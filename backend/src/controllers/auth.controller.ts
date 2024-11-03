@@ -58,7 +58,6 @@ export const logoutHandler = catchErrors(async (req, res) => {
   if (payload) {
     await SessionModel.findByIdAndDelete(payload.sessionId);
   }
-  console.log("logout session", payload?.sessionId);
   return clearAuthCookies(res)
     .status(OK)
     .json({ message: "Logged out successfully" });

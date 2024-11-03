@@ -88,13 +88,7 @@ const Header = () => {
           >
             Preview
           </NavLink>
-          <Button
-            onClick={() => {
-              signOut();
-              console.log("logout", user);
-            }}
-            variant={"link"}
-          >
+          <Button onClick={() => signOut()} variant={"link"}>
             Logout
           </Button>
         </div>
