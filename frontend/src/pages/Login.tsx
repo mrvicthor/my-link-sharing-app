@@ -133,7 +133,7 @@ function Login() {
             </Button>
             <p className="mt-6 text-[#737373] text-center text-sm">
               Don't have an account?
-              <a href="/signup" target="_self" className="text-[#633cff] ">
+              <a href="/signup" target="_self" className="text-[#633cff] pl-2">
                 Create account
               </a>
             </p>
