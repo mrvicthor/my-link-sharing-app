@@ -1,13 +1,14 @@
-import { Loader2 } from "lucide-react";
-import { Button } from "./ui/button";
+import { Player } from "@lottiefiles/react-lottie-player";
 
 const Loader = () => {
   return (
     <div className="flex justify-center mt-4">
-      <Button disabled>
-        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-        Loading...
-      </Button>
+      <Player
+        autoplay
+        loop
+        src="https://lottie.host/767225c0-e475-48db-8b55-742a11287541/GmhdZpg40Y.json"
+        style={{ height: "450px", width: "350px" }}
+      ></Player>
     </div>
   );
 };

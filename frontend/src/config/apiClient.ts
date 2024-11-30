@@ -11,6 +11,8 @@ const TokenRefreshClient = axios.create(options);
 TokenRefreshClient.interceptors.response.use((response) => response.data);
 const API = axios.create(options);
 
+let isRefreshing = false;
+
 API.interceptors.response.use(
   (response) => response.data,
   async (error) => {
@@ -18,15 +20,19 @@ API.interceptors.response.use(
     const { status, data } = response || {};
     // refresh access token if it's expired
     if (status === 401 && data.errorCode === "InvalidAccessToken") {
-      try {
-        await TokenRefreshClient.get("/auth/refresh");
-        return TokenRefreshClient(config);
-      } catch (error) {
-        console.log(error);
-        queryClient.clear();
-        navigate("/login", {
-          state: { redirectUrl: window.location.pathname },
-        });
+      if (isRefreshing) {
+        isRefreshing = true;
+        try {
+          await TokenRefreshClient.get("/auth/refresh");
+          return TokenRefreshClient(config);
+        } catch (error) {
+          isRefreshing = false;
+          console.log(error);
+          queryClient.clear();
+          navigate("/login", {
+            state: { redirectUrl: window.location.pathname },
+          });
+        }
       }
     }
     return Promise.reject({ status, ...data });
