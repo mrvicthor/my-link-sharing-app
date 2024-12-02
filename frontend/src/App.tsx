@@ -1,7 +1,4 @@
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/vite.svg'
 import { Outlet, Routes, Route, useNavigate } from "react-router-dom";
-import PublicRoute from "./components/PublicRoute";
 import ErrorPage from "./pages/ErrorPage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
@@ -24,38 +21,10 @@ function App() {
       {/* Public Preview Routes */}
       <Route path="link/:id" element={<Preview />} />
       {/* Public Auth Routes */}
-      <Route
-        path="login"
-        element={
-          <PublicRoute>
-            <Login />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="signup"
-        element={
-          <PublicRoute>
-            <Signup />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="password/forgot"
-        element={
-          <PublicRoute>
-            <ForgotPassword />
-          </PublicRoute>
-        }
-      />
-      <Route
-        path="password/reset"
-        element={
-          <PublicRoute>
-            <ResetPassword />
-          </PublicRoute>
-        }
-      />
+      <Route path="login" element={<Login />} />
+      <Route path="signup" element={<Signup />} />
+      <Route path="password/forgot" element={<ForgotPassword />} />
+      <Route path="password/reset" element={<ResetPassword />} />
       {/* Public Verified Auth Routes */}
       <Route path="email/verify/:code" element={<VerifyEmail />} />
 
